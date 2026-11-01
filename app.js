@@ -326,10 +326,25 @@
         if (GP_LIVE) wGP = new ethers.Contract(C.GATEPASS, GP_ABI, S.signer);
       }
       $("connectBtn").textContent = short(S.account);
+      $("connectBtn").classList.add("on");
+      $("connectBtn").title = "Подключено: " + S.account;
       $("stakeNote").textContent = LIVE ? "Сначала «Разрешить», потом «Вложить». Токены можно вывести после окончания лока. Комиссия протокола: 10% от забираемых наград (тело вклада без комиссии)." : "DEMO: вложения включатся после деплоя контрактов.";
       await refreshUser();
       await refreshPass();
     } catch (e) { toast(errMsg(e), true); }
+  }
+
+  async function autoConnect() {
+    if (!window.ethereum) return;
+    try {
+      const acc = await window.ethereum.request({ method: "eth_accounts" });
+      if (!acc || !acc.length) return;
+      if (LIVE) {
+        const cid = await window.ethereum.request({ method: "eth_chainId" });
+        if (String(cid).toLowerCase() !== String(C.CHAIN_HEX).toLowerCase()) return;
+      }
+      await connect();
+    } catch (e) {}
   }
 
   // ---------- actions ----------
@@ -428,6 +443,7 @@
       window.ethereum.on && window.ethereum.on("accountsChanged", () => location.reload());
       window.ethereum.on && window.ethereum.on("chainChanged", () => location.reload());
     }
+    autoConnect();
     refreshGlobal();
     refreshPass();
     setInterval(refreshGlobal, 20000);
