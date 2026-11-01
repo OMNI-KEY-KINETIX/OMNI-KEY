@@ -15,7 +15,7 @@ window.OMNI = {
   STAKING:    "0x49c6a95A95453143b0161437aAbc43db2383771C",   // стейкинг v2 (задеплоен)
 
   // --- Адрес сайта (для иконки токена в MetaMask), например https://username.github.io/omni-key/ ---
-  SITE_URL: "",
+  SITE_URL: "https://omni-key-kinetix.github.io/OMNI-KEY/",
 
   // --- Торговля (после создания пулов вставь прямые ссылки) ---
   PANCAKE_URL: "",   // пусто = сайт сам соберёт ссылку на swap из адреса токена

@@ -37,7 +37,7 @@ nav a:hover{color:#fff}
 
 /* hero */
 .hero{position:relative;min-height:88vh;display:flex;align-items:center;background:
-  linear-gradient(180deg,rgba(5,7,13,.55),rgba(5,7,13,.92)),url(assets/hall.jpg) center/cover no-repeat}
+  linear-gradient(180deg,rgba(5,7,13,.55),rgba(5,7,13,.92)),url(hall.jpg) center/cover no-repeat}
 .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding-top:50px;padding-bottom:50px}
 .eyebrow{color:var(--gold);letter-spacing:.35em;font-size:.78rem;text-transform:uppercase}
 h1{font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.02;margin:.25em 0 .3em;letter-spacing:.04em;color:#fff;text-shadow:0 0 30px rgba(74,115,255,.5)}
@@ -73,7 +73,7 @@ h2{font-size:clamp(1.6rem,3.4vw,2.4rem);margin:0 0 6px;letter-spacing:.06em;colo
 .pill.on{color:var(--teal);border-color:var(--teal)}
 
 /* staking */
-.stakeBg{background:linear-gradient(180deg,rgba(5,7,13,.92),rgba(5,7,13,.78)),url(assets/lab.jpg) center/cover no-repeat;border-radius:22px;border:1px solid var(--line);padding:26px}
+.stakeBg{background:linear-gradient(180deg,rgba(5,7,13,.92),rgba(5,7,13,.78)),url(lab.jpg) center/cover no-repeat;border-radius:22px;border:1px solid var(--line);padding:26px}
 .tiers{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
 .tier{cursor:pointer;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:left;color:var(--text);transition:.2s;font:inherit}
 .tier:hover{border-color:var(--sap)}
@@ -119,7 +119,7 @@ td .btn{margin-right:6px}
 .trust code{color:var(--teal)}
 .risk{border-color:#4a2c36;background:linear-gradient(180deg,#1a0f15,#0f0a0d)}
 .twoCol{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:stretch}
-.imgCard{min-height:260px;border-radius:16px;border:1px solid var(--line);background:url(assets/views.jpg) center/cover no-repeat}
+.imgCard{min-height:260px;border-radius:16px;border:1px solid var(--line);background:url(views.jpg) center/cover no-repeat}
 
 footer{margin-top:80px;border-top:1px solid var(--line);padding:30px 0 60px;color:var(--mute);font-size:.85rem}
 footer .wrap{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}

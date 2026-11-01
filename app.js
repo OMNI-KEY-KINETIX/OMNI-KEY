@@ -93,7 +93,7 @@
     $("particleGrid").innerHTML = C.PARTICLES.map((p) => `
       <div class="card particle ${p.status}">
         <div class="no">#${p.no}</div>
-        ${p.status === "active" ? '<img class="pic" src="assets/kiix.svg" alt="KIIX">' : '<div class="sealedIcon">🔒</div>'}
+        ${p.status === "active" ? '<img class="pic" src="kiix.svg" alt="KIIX">' : '<div class="sealedIcon">🔒</div>'}
         <h3>${p.sym}</h3>
         <p><b>${p.name}</b></p>
         <p>${p.role}</p>
@@ -323,7 +323,7 @@
       try {
         await ensureChain();
         const options = { address: C.KIIX_TOKEN, symbol: "KIIX", decimals: 18 };
-        if (C.SITE_URL) options.image = C.SITE_URL.replace(/\/?$/, "/") + "assets/kiix.svg";
+        if (C.SITE_URL) options.image = C.SITE_URL.replace(/\/?$/, "/") + "kiix.svg";
         await window.ethereum.request({ method: "wallet_watchAsset", params: { type: "ERC20", options } });
       } catch (e) { toast(errMsg(e), true); }
     });
