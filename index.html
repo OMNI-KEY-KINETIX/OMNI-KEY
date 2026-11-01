@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OMNI-KEY — Галактический артефакт из микрочастиц Web3 · KINETIX (KIIX)</title>
+<meta name="description" content="OMNI-KEY: единый артефакт, собранный из токенов, NFT и смарт-контрактов. Частица №1 — KINETIX (KIIX). Прогрессивный стейкинг на BNB Chain.">
+<link rel="icon" href="assets/omnikey-logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div id="modeBanner">DEMO-РЕЖИМ: контракты не подключены — цифры ненастоящие.</div>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><img src="assets/omnikey-logo.svg" alt="OMNI-KEY">OMNI-KEY <small>/ KIIX</small></a>
+    <nav>
+      <a href="#particles">Частицы</a><a href="#core">Ядро</a><a href="#sectors">Сектора</a><a href="#tokenomics">Токеномика</a><a href="#trust">Безопасность</a>
+    </nav>
+    <button id="connectBtn" class="btn">Подключить кошелёк</button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <div class="eyebrow">Единый галактический артефакт</div>
+        <h1>OMNI<span>-KEY</span></h1>
+        <p class="lead">Токены, NFT и смарт-контракты — это не продукты. Это <b>атомы</b>. Из них физически собран Ключ: <b>1.25 квадриллиона кредитов</b>, <b>10 зетта-джоулей</b>, доступ в закрытые сектора. Каждая частица неделима. Каждая — реальный контракт в блокчейне.</p>
+        <div class="cta">
+          <a class="btn big" href="#core">Вложить энергию в Ядро</a>
+          <a class="btn big gold" href="#particles" id="buyHero">Купить KIIX</a>
+        </div>
+      </div>
+      <div class="logoBox"><img src="assets/omnikey-logo.svg" alt="Анимированный логотип OMNI-KEY"></div>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="strip">
+      <div><b id="sEnergy">—</b><span>Энергия Ядра</span></div>
+      <div><b id="sBound">—</b><span>KIIX связано</span></div>
+      <div><b id="sFill">—</b><span>Заполнение частицы №1</span></div>
+      <div><b id="sPool">—</b><span>Остаток наград</span></div>
+    </div>
+  </div>
+
+  <!-- PARTICLES -->
+  <section id="particles"><div class="wrap">
+    <div class="tag">// РЕЕСТР ЧАСТИЦ</div>
+    <h2>Из чего собран Ключ</h2>
+    <p class="sub">Каждый новый токен проекта — отдельная частица с лимитом эмиссии не более 1 миллиарда. Подключается к Ядру через тот же стейкинг. Пока открыта одна. Остальные запечатаны.</p>
+    <div class="grid g4" id="particleGrid"></div>
+
+    <div class="card" style="margin-top:16px">
+      <div class="grid g2" style="align-items:center">
+        <div>
+          <h3>KINETIX · KIIX — частица №1</h3>
+          <div class="row"><span>Сеть</span><b>BNB Smart Chain</b></div>
+          <div class="row"><span>Контракт</span><b id="tokAddr">—</b></div>
+          <div class="row"><span>Эмиссия</span><b>1 000 000 000 (фикс.)</b></div>
+          <div class="row"><span>Mint / owner / налоги</span><b>НЕТ</b></div>
+        </div>
+        <div>
+          <div class="btns" style="margin-bottom:10px">
+            <a class="btn gold full" id="buyPancake" target="_blank" rel="noopener" style="text-align:center">PancakeSwap</a>
+            <a class="btn full" id="buyDodo" target="_blank" rel="noopener" style="text-align:center">DODO</a>
+          </div>
+          <button class="btn full" id="addTokenBtn">+ Добавить KIIX в MetaMask</button>
+          <p class="note">Ссылки на торговлю активируются после запуска пулов. Всегда сверяй адрес контракта с BscScan.</p>
+        </div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- CORE / STAKING -->
+  <section id="core"><div class="wrap">
+    <div class="tag">// ЯДРО · СТЕЙКИНГ</div>
+    <h2>Прогрессивный стейкинг KIIX</h2>
+    <p class="sub">Заблокировал KIIX — получил множитель наград и добавил энергию Ключу. Чем дольше лок, тем сильнее множитель. APR плавающий и честный: считается из реального пула наград, а не нарисован. Комиссия протокола — 10% от забираемых наград, вклад без комиссии.</p>
+
+    <div class="stakeBg">
+      <div class="tiers" id="tiers"></div>
+      <div class="panelRow">
+        <div class="box">
+          <div class="row"><span>Баланс KIIX</span><b id="uBal">—</b></div>
+          <div class="row"><span>Твой стейк</span><b id="uStaked">—</b></div>
+          <div class="row"><span>Награды к получению</span><b id="uPending">—</b></div>
+          <div class="row"><span>Твоя энергия в Ядре</span><b id="uEnergy">—</b></div>
+          <div class="row"><span>Всего в Ядре</span><b id="gStaked">—</b></div>
+          <div class="row"><span>Награды в год (поток)</span><b id="gPerYear">—</b></div>
+        </div>
+        <div class="box">
+          <div class="row"><span>Выбран уровень</span><b id="selTier">—</b></div>
+          <div class="inputWrap">
+            <input type="number" id="amount" min="0" step="any" placeholder="Сколько KIIX вложить">
+            <button class="btn sm" id="maxBtn" type="button">MAX</button>
+          </div>
+          <div class="btns">
+            <button class="btn gold" id="approveBtn">1. Разрешить</button>
+            <button class="btn" id="stakeBtn">2. Вложить</button>
+          </div>
+          <p class="note" id="stakeNote">Подключи кошелёк, чтобы вкладывать.</p>
+        </div>
+      </div>
+
+      <div class="box" style="margin-top:18px">
+        <h3 style="margin:0 0 8px">Твои позиции</h3>
+        <div class="scroll"><table>
+          <thead><tr><th>#</th><th>Уровень</th><th>Вложено</th><th>Разблок.</th><th>Награда</th><th></th></tr></thead>
+          <tbody id="posBody"><tr><td colspan="6" class="empty">Подключи кошелёк</td></tr></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div></section>
+
+  <!-- SECTORS -->
+  <section id="sectors"><div class="wrap">
+    <div class="tag">// ВРАТА</div>
+    <h2>Закрытые сектора</h2>
+    <p class="sub">Доступ считается автоматически: твой стейк × 8 МДж. Никаких списков и админов — только энергия, которую ты реально вложил в Ядро.</p>
+    <div class="grid g4" id="sectorGrid"></div>
+  </div></section>
+
+  <!-- TOKENOMICS -->
+  <section id="tokenomics"><div class="wrap">
+    <div class="tag">// ТОКЕНОМИКА KIIX</div>
+    <h2>1 000 000 000 KIIX. Всё.</h2>
+    <p class="sub">Эмиссия фиксирована навсегда: функции mint в контракте нет. Наград мало и они растянуты на 36 месяцев, чтобы не давить на цену. 1 KIIX в Ядре = 1 кредит стоимости = 8 МДж энергии.</p>
+    <div class="twoCol">
+      <div class="card"><div class="alloc" id="alloc"></div></div>
+      <div class="imgCard" role="img" aria-label="OMNI-KEY с разных сторон"></div>
+    </div>
+  </div></section>
+
+  <!-- TRUST -->
+  <section id="trust"><div class="wrap">
+    <div class="tag">// ПРОВЕРЬ САМ</div>
+    <h2>Что владелец может — и чего не может</h2>
+    <div class="grid g2" style="margin-top:18px">
+      <div class="card"><h3>✅ Гарантии контракта</h3>
+        <ul class="trust">
+          <li>Токен: <code>без mint, без owner, без пауз, без налогов</code>.</li>
+          <li>Стейкинг: владелец <b>не может</b> забрать вложенные токены.</li>
+          <li>Владелец <b>не может</b> менять уровни, множители, сроки и размер комиссии (10% с наград, прописано в коде).</li>
+          <li>Награды, добавленные в пул, остаются у стейкеров.</li>
+          <li>Исходники открыты, верифицируются на BscScan.</li>
+        </ul>
+      </div>
+      <div class="card risk"><h3>⚠️ Риски (читай)</h3>
+        <ul class="trust">
+          <li>Проект экспериментальный. Токен может обесцениться до нуля.</li>
+          <li>Пулы ликвидности маленькие: сделки двигают цену сильно.</li>
+          <li>«Кредиты» и «зетта-джоули» — внутренние величины концепта, не рыночная цена.</li>
+          <li>Это не финансовый совет. Вкладывай только то, что готов потерять.</li>
+        </ul>
+      </div>
+    </div>
+  </div></section>
+</main>
+
+<footer><div class="wrap">
+  <div><b style="color:#fff">OMNI-KEY</b> · KINETIX (KIIX) · BNB Smart Chain</div>
+  <div class="mono" id="footLinks"></div>
+</div></footer>
+
+<div id="toast"></div>
+<script src="ethers.umd.min.js"></script>
+<script src="config.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

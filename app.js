@@ -1,0 +1,339 @@
+/* OMNI-KEY × KINETIX — frontend. Читает/пишет только публичные методы контрактов. Приватных ключей тут нет и быть не может. */
+(function () {
+  "use strict";
+  const C = window.OMNI;
+  const { ethers } = window;
+  const $ = (id) => document.getElementById(id);
+
+  const isAddr = (a) => { try { return ethers.isAddress(a) && a !== ethers.ZeroAddress; } catch { return false; } };
+  const LIVE = isAddr(C.KIIX_TOKEN) && isAddr(C.STAKING);
+
+  const TOKEN_ABI = [
+    "function balanceOf(address) view returns (uint256)",
+    "function allowance(address,address) view returns (uint256)",
+    "function approve(address,uint256) returns (bool)",
+  ];
+  const STAKING_ABI = [
+    "function totalStaked() view returns (uint256)",
+    "function totalWeight() view returns (uint256)",
+    "function rewardsPerYear() view returns (uint256)",
+    "function aprBps(uint8) view returns (uint256)",
+    "function totalRewardsFunded() view returns (uint256)",
+    "function totalRewardsPaid() view returns (uint256)",
+    "function positionsOf(address) view returns (tuple(uint128 amount,uint128 weight,uint64 unlockTime,uint8 tier,bool open,uint256 rewardDebt,uint256 pending)[])",
+    "function pendingReward(address,uint256) view returns (uint256)",
+    "function stake(uint256,uint8)",
+    "function claim(uint256)",
+    "function withdraw(uint256)",
+  ];
+
+  const TIERS = [
+    { name: "ИСКРА",      days: 0,   mult: 1.0 },
+    { name: "ИМПУЛЬС",    days: 30,  mult: 1.5 },
+    { name: "ПЛАЗМА",     days: 90,  mult: 2.5 },
+    { name: "СВЕРХНОВАЯ", days: 180, mult: 4.0 },
+  ];
+
+  const ALLOC = [
+    ["Награды стейкинга (36 мес.)", 15], ["Разработчик (вестинг)", 20], ["Казна проекта", 25],
+    ["Ликвидность DEX", 10], ["Ядро OMNI-KEY", 10], ["Маркетинг и комьюнити", 10], ["Резерв (новые частицы)", 10],
+  ];
+
+  // ---------- state ----------
+  const S = {
+    tier: 1, account: null, signer: null,
+    bal: 0n, allowance: 0n, positions: [], pend: [],
+    g: { staked: 0n, weight: 0n, perYear: 0n, funded: 0n, paid: 0n, apr: [0n, 0n, 0n, 0n] },
+  };
+  const DEMO_G = {
+    staked: ethers.parseUnits("12450000", 18), weight: ethers.parseUnits("24900000", 18),
+    perYear: ethers.parseUnits("150000000", 18), funded: ethers.parseUnits("300000000", 18),
+    paid: ethers.parseUnits("1250000", 18), apr: [60240n, 90360n, 150600n, 240960n],
+  };
+
+  let readProvider, rToken, rStaking, wToken, wStaking;
+  if (LIVE) {
+    readProvider = new ethers.JsonRpcProvider(C.RPC, C.CHAIN_ID, { staticNetwork: true, cacheTimeout: -1 });
+    rToken = new ethers.Contract(C.KIIX_TOKEN, TOKEN_ABI, readProvider);
+    rStaking = new ethers.Contract(C.STAKING, STAKING_ABI, readProvider);
+  }
+
+  // ---------- helpers ----------
+  const fmtTok = (v, d = 2) => {
+    const n = Number(ethers.formatUnits(v, 18));
+    return n.toLocaleString("ru-RU", { maximumFractionDigits: d });
+  };
+  const SI = ["Дж", "кДж", "МДж", "ГДж", "ТДж", "ПДж", "ЭДж", "ЗДж"];
+  const fmtEnergy = (j) => {
+    if (!isFinite(j) || j <= 0) return "0 Дж";
+    let i = 0; while (j >= 1000 && i < SI.length - 1) { j /= 1000; i++; }
+    return j.toLocaleString("ru-RU", { maximumFractionDigits: 2 }) + " " + SI[i];
+  };
+  const energyOf = (wei) => Number(ethers.formatUnits(wei, 18)) * C.ENERGY_PER_KIIX_J;
+  const short = (a) => a.slice(0, 6) + "…" + a.slice(-4);
+  const fmtApr = (bps, hasStake) => {
+    if (!hasStake) return "ты первый";
+    const p = Number(bps) / 100;
+    if (p > 1e6) return ">1 000 000%";
+    return p.toLocaleString("ru-RU", { maximumFractionDigits: 0 }) + "%";
+  };
+  let toastT;
+  function toast(msg, err) {
+    const t = $("toast"); t.textContent = msg; t.className = "show" + (err ? " err" : "");
+    clearTimeout(toastT); toastT = setTimeout(() => (t.className = ""), err ? 7000 : 4500);
+  }
+  const errMsg = (e) => (e && (e.shortMessage || e.reason || e.message) || "Ошибка").toString().slice(0, 180);
+
+  // ---------- static render ----------
+  function renderStatic() {
+    const banner = $("modeBanner");
+    if (LIVE) { banner.textContent = "LIVE · BNB Smart Chain · данные читаются прямо из контрактов"; banner.className = "live"; }
+
+    // particles
+    $("particleGrid").innerHTML = C.PARTICLES.map((p) => `
+      <div class="card particle ${p.status}">
+        <div class="no">#${p.no}</div>
+        ${p.status === "active" ? '<img class="pic" src="assets/kiix.svg" alt="KIIX">' : '<div class="sealedIcon">🔒</div>'}
+        <h3>${p.sym}</h3>
+        <p><b>${p.name}</b></p>
+        <p>${p.role}</p>
+        <p class="mono">Эмиссия: ${p.supply}</p>
+        <span class="pill ${p.status === "active" ? "on" : ""}">${p.status === "active" ? "активна" : "запечатана"}</span>
+      </div>`).join("");
+
+    // tiers
+    $("tiers").innerHTML = TIERS.map((t, i) => `
+      <button class="tier" data-t="${i}" type="button">
+        <b>${t.name}</b><div class="m">×${t.mult.toFixed(1)}</div>
+        <small>${t.days === 0 ? "без блокировки" : "лок " + t.days + " дней"}</small>
+        <div class="apr" id="apr${i}">APR —</div>
+      </button>`).join("");
+    document.querySelectorAll(".tier").forEach((b) => b.addEventListener("click", () => { S.tier = +b.dataset.t; markTier(); recalcButtons(); }));
+    markTier();
+
+    // alloc
+    $("alloc").innerHTML = ALLOC.map(([n, p]) => `<div class="a"><span>${n}</span><div class="t"><i style="width:${p * 3.5}%"></i></div><em>${p}%</em></div>`).join("") +
+      `<p class="note">${ALLOC.map(([n, p]) => n + " " + (p * 10) + " млн").join(" · ")}</p>`;
+
+    // links
+    const tok = LIVE ? C.KIIX_TOKEN : null;
+    $("tokAddr").textContent = tok ? short(tok) : "после деплоя";
+    const pc = C.PANCAKE_URL || (tok ? `https://pancakeswap.finance/swap?outputCurrency=${tok}&chain=bsc` : "#");
+    const dd = C.DODO_URL || "https://app.dodoex.io/";
+    $("buyPancake").href = pc; $("buyDodo").href = dd;
+    $("buyHero").addEventListener("click", () => { });
+    if (!tok) {
+      $("buyPancake").addEventListener("click", (e) => { e.preventDefault(); toast("Торговля стартует после запуска пулов."); });
+    }
+    $("footLinks").innerHTML = tok
+      ? `<a target="_blank" rel="noopener" href="${C.EXPLORER}/token/${C.KIIX_TOKEN}">Токен</a> · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.STAKING}">Стейкинг</a>`
+      : "контракты: после деплоя";
+  }
+
+  function markTier() {
+    document.querySelectorAll(".tier").forEach((b) => b.classList.toggle("sel", +b.dataset.t === S.tier));
+    const t = TIERS[S.tier];
+    $("selTier").textContent = `${t.name} ×${t.mult.toFixed(1)} · ${t.days ? t.days + " дн." : "без лока"}`;
+  }
+
+  function renderSectors(userWei) {
+    const e = energyOf(userWei || 0n);
+    $("sectorGrid").innerHTML = C.SECTORS.map((s) => {
+      const open = e >= s.need;
+      const pct = Math.min(100, (e / s.need) * 100);
+      return `<div class="card sector ${open ? "open" : ""}">
+        <div class="ring">${open ? "🔓" : "🔒"}</div>
+        <h3>СЕКТОР ${s.name}</h3>
+        <p class="mono">${fmtEnergy(s.need)}</p><p>${s.hint}</p>
+        <div class="bar"><i style="width:${pct.toFixed(1)}%"></i></div>
+        <p class="note">${open ? "ДОСТУП ОТКРЫТ" : pct.toFixed(1) + "%"}</p></div>`;
+    }).join("");
+  }
+
+  // ---------- global data ----------
+  async function refreshGlobal() {
+    try {
+      if (LIVE) {
+        const [staked, weight, perYear, funded, paid, a0, a1, a2, a3] = await Promise.all([
+          rStaking.totalStaked(), rStaking.totalWeight(), rStaking.rewardsPerYear(),
+          rStaking.totalRewardsFunded(), rStaking.totalRewardsPaid(),
+          rStaking.aprBps(0), rStaking.aprBps(1), rStaking.aprBps(2), rStaking.aprBps(3),
+        ]);
+        S.g = { staked, weight, perYear, funded, paid, apr: [a0, a1, a2, a3] };
+      } else S.g = DEMO_G;
+    } catch (e) { console.warn("global read failed", e); }
+    const g = S.g;
+    $("sEnergy").textContent = fmtEnergy(energyOf(g.staked));
+    $("sBound").textContent = fmtTok(g.staked, 0);
+    $("sFill").textContent = ((Number(ethers.formatUnits(g.staked, 18)) / C.KIIX_SUPPLY) * 100).toFixed(6) + "%";
+    $("sPool").textContent = fmtTok(g.funded - g.paid, 0);
+    $("gStaked").textContent = fmtTok(g.staked, 0) + " KIIX";
+    $("gPerYear").textContent = fmtTok(g.perYear, 0) + " KIIX";
+    for (let i = 0; i < 4; i++) $("apr" + i).textContent = "APR " + fmtApr(g.apr[i], g.weight > 0n);
+  }
+
+  // ---------- user data ----------
+  async function refreshUser() {
+    if (!S.account) return;
+    if (!LIVE) { $("uBal").textContent = "DEMO"; renderSectors(0n); return; }
+    try {
+      const [bal, alw, pos] = await Promise.all([
+        rToken.balanceOf(S.account), rToken.allowance(S.account, C.STAKING), rStaking.positionsOf(S.account),
+      ]);
+      S.bal = bal; S.allowance = alw;
+      S.positions = pos.map((p, i) => ({ id: i, amount: p.amount, unlock: Number(p.unlockTime), tier: Number(p.tier), open: p.open }));
+      const open = S.positions.filter((p) => p.open);
+      S.pend = await Promise.all(open.map((p) => rStaking.pendingReward(S.account, p.id)));
+      const staked = open.reduce((a, p) => a + p.amount, 0n);
+      const pending = S.pend.reduce((a, v) => a + v, 0n);
+      $("uBal").textContent = fmtTok(bal) + " KIIX";
+      $("uStaked").textContent = fmtTok(staked) + " KIIX";
+      $("uPending").textContent = fmtTok(pending, 4) + " KIIX";
+      $("uEnergy").textContent = fmtEnergy(energyOf(staked));
+      renderSectors(staked);
+      renderPositions(open);
+      recalcButtons();
+    } catch (e) { console.warn(e); toast("Не удалось прочитать данные: " + errMsg(e), true); }
+  }
+
+  function renderPositions(open) {
+    const body = $("posBody");
+    if (!open.length) { body.innerHTML = '<tr><td colspan="6" class="empty">Позиций пока нет — вложи KIIX выше.</td></tr>'; return; }
+    const now = Math.floor(Date.now() / 1000);
+    body.innerHTML = open.map((p, k) => {
+      const left = p.unlock - now;
+      const unlocked = left <= 0;
+      const when = unlocked ? "открыто" : left > 86400 ? Math.ceil(left / 86400) + " дн." : Math.ceil(left / 3600) + " ч.";
+      return `<tr><td>${p.id}</td><td>${TIERS[p.tier].name} ×${TIERS[p.tier].mult.toFixed(1)}</td><td>${fmtTok(p.amount)}</td><td>${when}</td><td>${fmtTok(S.pend[k], 4)}</td>
+        <td><button class="btn sm" data-claim="${p.id}">Забрать</button><button class="btn sm gold" data-wd="${p.id}" ${unlocked ? "" : "disabled"}>Вывести</button></td></tr>`;
+    }).join("");
+    body.querySelectorAll("[data-claim]").forEach((b) => b.addEventListener("click", () => act(b, () => wStaking.claim(+b.dataset.claim), "Награда получена")));
+    body.querySelectorAll("[data-wd]").forEach((b) => b.addEventListener("click", () => act(b, () => wStaking.withdraw(+b.dataset.wd), "Токены и награда выведены")));
+  }
+
+  // ---------- wallet ----------
+  async function ensureChain() {
+    try { await window.ethereum.request({ method: "wallet_switchEthereumChain", params: [{ chainId: C.CHAIN_HEX }] }); }
+    catch (e) {
+      if (e && e.code === 4902) {
+        await window.ethereum.request({ method: "wallet_addEthereumChain", params: [{
+          chainId: C.CHAIN_HEX, chainName: C.CHAIN_NAME, nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+          rpcUrls: [C.RPC], blockExplorerUrls: [C.EXPLORER] }] });
+      } else throw e;
+    }
+  }
+
+  async function connect() {
+    if (!window.ethereum) return toast("MetaMask не найден. Установи расширение или открой сайт в браузере кошелька.", true);
+    try {
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      if (LIVE) await ensureChain();
+      const bp = new ethers.BrowserProvider(window.ethereum); bp.pollingInterval = 1500;
+      S.signer = await bp.getSigner();
+      S.account = await S.signer.getAddress();
+      if (LIVE) {
+        wToken = new ethers.Contract(C.KIIX_TOKEN, TOKEN_ABI, S.signer);
+        wStaking = new ethers.Contract(C.STAKING, STAKING_ABI, S.signer);
+      }
+      $("connectBtn").textContent = short(S.account);
+      $("stakeNote").textContent = LIVE ? "Сначала «Разрешить», потом «Вложить». Токены можно вывести после окончания лока. Комиссия протокола: 10% от забираемых наград (тело вклада без комиссии)." : "DEMO: вложения включатся после деплоя контрактов.";
+      await refreshUser();
+    } catch (e) { toast(errMsg(e), true); }
+  }
+
+  // ---------- actions ----------
+  function parseAmt() {
+    const v = $("amount").value.trim();
+    if (!v) return 0n;
+    try { return ethers.parseUnits(v, 18); } catch { return 0n; }
+  }
+  function recalcButtons() {
+    const a = parseAmt();
+    const ok = LIVE && S.account && a > 0n && a <= S.bal;
+    const need = a > S.allowance;
+    $("approveBtn").disabled = !(ok && need);
+    $("stakeBtn").disabled = !(ok && !need);
+  }
+  async function act(btn, fn, okMsg, after) {
+    const old = btn.textContent; btn.disabled = true; btn.textContent = "Подпиши в кошельке…";
+    try {
+      const tx = await fn();
+      btn.textContent = "Ждём блок…";
+      await tx.wait();
+      await new Promise((r) => setTimeout(r, 1800)); // даём публичному RPC догнать блок
+      toast("✅ " + okMsg);
+      if (after) after();
+    } catch (e) { toast(errMsg(e), true); }
+    btn.textContent = old;
+    await Promise.all([refreshUser(), refreshGlobal()]);
+    recalcButtons();
+  }
+
+  // ---------- starfield + quanta ----------
+  const cv = $("stars"), ctx = cv.getContext("2d");
+  let W, H, stars = [], quanta = [], mx = 0.5, my = 0.5;
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function resize() {
+    W = cv.width = innerWidth; H = cv.height = innerHeight;
+    stars = Array.from({ length: Math.min(160, Math.floor(W * H / 9000)) }, () => ({
+      x: Math.random() * W, y: Math.random() * H, z: Math.random() * 0.9 + 0.1,
+      c: ["#f6e2a0", "#7fa0ff", "#bfeaff", "#00ffcc"][Math.floor(Math.random() * 4)] }));
+  }
+  function burst(n) {
+    for (let i = 0; i < n; i++) quanta.push({
+      x: Math.random() * W, y: H + 10, vx: (Math.random() - 0.5) * 3, vy: -2 - Math.random() * 4, life: 1,
+      c: Math.random() < 0.5 ? "#f6e2a0" : "#00ffcc" });
+  }
+  function frame() {
+    ctx.clearRect(0, 0, W, H);
+    for (const s of stars) {
+      s.y += s.z * 0.15; if (s.y > H) { s.y = 0; s.x = Math.random() * W; }
+      const px = s.x + (mx - 0.5) * 30 * s.z, py = s.y + (my - 0.5) * 30 * s.z;
+      ctx.globalAlpha = 0.25 + s.z * 0.6; ctx.fillStyle = s.c;
+      ctx.beginPath(); ctx.arc(px, py, s.z * 1.5, 0, 6.283); ctx.fill();
+    }
+    const tx = W / 2, ty = H * 0.28;
+    for (const q of quanta) {
+      q.vx += (tx - q.x) * 0.0009; q.vy += (ty - q.y) * 0.0009;
+      q.x += q.vx; q.y += q.vy; q.life -= 0.006;
+      ctx.globalAlpha = Math.max(0, q.life); ctx.fillStyle = q.c; ctx.shadowColor = q.c; ctx.shadowBlur = 8;
+      ctx.beginPath(); ctx.arc(q.x, q.y, 2.2, 0, 6.283); ctx.fill(); ctx.shadowBlur = 0;
+    }
+    quanta = quanta.filter((q) => q.life > 0);
+    ctx.globalAlpha = 1;
+    requestAnimationFrame(frame);
+  }
+  if (!reduce) {
+    addEventListener("resize", resize); addEventListener("mousemove", (e) => { mx = e.clientX / W; my = e.clientY / H; });
+    resize(); frame();
+  }
+
+  // ---------- wire up ----------
+  function init() {
+    renderStatic();
+    renderSectors(0n);
+    $("connectBtn").addEventListener("click", connect);
+    $("amount").addEventListener("input", recalcButtons);
+    $("maxBtn").addEventListener("click", () => { $("amount").value = ethers.formatUnits(S.bal, 18); recalcButtons(); });
+    $("approveBtn").addEventListener("click", () => act($("approveBtn"), () => wToken.approve(C.STAKING, parseAmt()), "Разрешение выдано. Теперь нажми «Вложить»"));
+    $("stakeBtn").addEventListener("click", () => act($("stakeBtn"), () => wStaking.stake(parseAmt(), S.tier), "KIIX вложены в Ядро. Энергия Ключа растёт", () => { $("amount").value = ""; if (!reduce) burst(90); }));
+    $("addTokenBtn").addEventListener("click", async () => {
+      if (!LIVE) return toast("Токен ещё не задеплоен.");
+      if (!window.ethereum) return toast("MetaMask не найден.", true);
+      try {
+        await ensureChain();
+        const options = { address: C.KIIX_TOKEN, symbol: "KIIX", decimals: 18 };
+        if (C.SITE_URL) options.image = C.SITE_URL.replace(/\/?$/, "/") + "assets/kiix.svg";
+        await window.ethereum.request({ method: "wallet_watchAsset", params: { type: "ERC20", options } });
+      } catch (e) { toast(errMsg(e), true); }
+    });
+    if (window.ethereum) {
+      window.ethereum.on && window.ethereum.on("accountsChanged", () => location.reload());
+      window.ethereum.on && window.ethereum.on("chainChanged", () => location.reload());
+    }
+    refreshGlobal();
+    setInterval(refreshGlobal, 20000);
+    setInterval(refreshUser, 12000);
+  }
+  init();
+})();

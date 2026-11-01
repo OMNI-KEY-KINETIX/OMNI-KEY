@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200" role="img" aria-label="OMNI-KEY">
+  <defs>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#f6e2a0"/><stop offset=".5" stop-color="#c9a24a"/><stop offset="1" stop-color="#7a5a1c"/>
+    </linearGradient>
+    <linearGradient id="sap" x1="0" y1="1" x2="1" y2="0">
+      <stop offset="0" stop-color="#1b2f8f"/><stop offset="1" stop-color="#5f86ff"/>
+    </linearGradient>
+    <radialGradient id="core" cx=".5" cy=".5" r=".5">
+      <stop offset="0" stop-color="#ffffff"/><stop offset=".45" stop-color="#bfeaff"/><stop offset="1" stop-color="#3a86ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <clipPath id="orb"><circle cx="100" cy="100" r="84"/></clipPath>
+  </defs>
+  <style>
+    .spin1{transform-origin:100px 100px;animation:s1 14s linear infinite}
+    .spin2{transform-origin:100px 100px;animation:s2 20s linear infinite}
+    .spin3{transform-origin:100px 100px;animation:s1 28s linear infinite reverse}
+    .pulse{transform-origin:100px 100px;animation:p 3.2s ease-in-out infinite}
+    .halo{animation:h 3.2s ease-in-out infinite}
+    @keyframes s1{to{transform:rotate(360deg)}}
+    @keyframes s2{to{transform:rotate(-360deg)}}
+    @keyframes p{0%,100%{transform:scale(.94)}50%{transform:scale(1.06)}}
+    @keyframes h{0%,100%{opacity:.55}50%{opacity:1}}
+    @media (prefers-reduced-motion:reduce){.spin1,.spin2,.spin3,.pulse,.halo{animation:none}}
+  </style>
+  <circle cx="100" cy="100" r="92" fill="#070b18" stroke="url(#gold)" stroke-width="2"/>
+  <circle class="halo" cx="100" cy="100" r="60" fill="url(#core)" opacity=".7"/>
+  <g clip-path="url(#orb)" fill="none">
+    <g class="spin3" stroke="url(#sap)" stroke-width="2" stroke-dasharray="1 4.2" stroke-linecap="round"><ellipse cx="100" cy="100" rx="84" ry="30"/></g>
+    <g class="spin1">
+      <ellipse cx="100" cy="100" rx="82" ry="34" stroke="url(#gold)" stroke-width="5"/>
+      <ellipse cx="100" cy="100" rx="82" ry="34" stroke="url(#sap)" stroke-width="2.4" stroke-dasharray="1.2 3.6" stroke-linecap="round"/>
+    </g>
+    <g class="spin2" transform="rotate(60 100 100)">
+      <ellipse cx="100" cy="100" rx="82" ry="34" stroke="url(#gold)" stroke-width="5"/>
+      <ellipse cx="100" cy="100" rx="82" ry="34" stroke="url(#sap)" stroke-width="2.4" stroke-dasharray="1.2 3.6" stroke-linecap="round"/>
+    </g>
+    <g class="spin1" transform="rotate(-60 100 100)">
+      <ellipse cx="100" cy="100" rx="82" ry="34" stroke="url(#gold)" stroke-width="5"/>
+      <ellipse cx="100" cy="100" rx="82" ry="34" stroke="url(#sap)" stroke-width="2.4" stroke-dasharray="1.2 3.6" stroke-linecap="round"/>
+    </g>
+  </g>
+  <g class="pulse" filter="url(#glow)">
+    <polygon points="100,62 128,78 138,100 128,122 100,138 72,122 62,100 72,78" fill="#d9f4ff" fill-opacity=".92" stroke="#fff" stroke-width="1.6"/>
+    <polygon points="100,74 118,84 124,100 118,116 100,126 82,116 76,100 82,84" fill="none" stroke="#3a86ff" stroke-width="1"/>
+    <path d="M100 62V74M128 78L118 84M138 100H124M128 122L118 116M100 138V126M72 122L82 116M62 100H76M72 78L82 84" stroke="#fff" stroke-width="1"/>
+    <rect x="90" y="90" width="20" height="20" fill="#0a1a3a" stroke="#00ffcc" stroke-width="1.2"/>
+    <path d="M94 96h12M94 100h12M94 104h12M96 92v16M104 92v16" stroke="#00ffcc" stroke-width=".7"/>
+  </g>
+  <circle cx="100" cy="100" r="92" fill="none" stroke="url(#gold)" stroke-width="1" opacity=".5"/>
+</svg>

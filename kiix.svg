@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256" role="img" aria-label="KINETIX KIIX">
+  <defs>
+    <linearGradient id="t" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00ffcc"/><stop offset="1" stop-color="#1aa7ff"/></linearGradient>
+    <radialGradient id="bg" cx=".5" cy=".4" r=".7"><stop offset="0" stop-color="#0f2430"/><stop offset="1" stop-color="#05070d"/></radialGradient>
+    <filter id="g" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <circle cx="128" cy="128" r="124" fill="url(#bg)" stroke="url(#t)" stroke-width="6"/>
+  <g fill="none" stroke="url(#t)" stroke-linecap="round" opacity=".55">
+    <path d="M30 96h46M20 128h38M30 160h46" stroke-width="5"/>
+  </g>
+  <g filter="url(#g)" fill="none" stroke="url(#t)" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M96 62v132"/>
+    <path d="M178 62L108 128l70 66"/>
+  </g>
+  <circle cx="128" cy="128" r="9" fill="#fff"/>
+</svg>
