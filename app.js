@@ -27,6 +27,17 @@
     "function withdraw(uint256)",
   ];
 
+  const GP_LIVE = isAddr(C.GATEPASS);
+  const GP_ABI = [
+    "function priceUsd(uint256) view returns (uint256)",
+    "function minted(uint256) view returns (uint256)",
+    "function maxSupply(uint256) view returns (uint256)",
+    "function quote(uint8,address) view returns (uint256)",
+    "function accessLevel(address) view returns (uint8)",
+    "function saleOpen() view returns (bool)",
+    "function buy(uint8,address,address) payable returns (uint256)",
+  ];
+
   const TIERS = [
     { name: "ИСКРА",      days: 0,   mult: 1.0 },
     { name: "ИМПУЛЬС",    days: 30,  mult: 1.5 },
@@ -51,12 +62,27 @@
     paid: ethers.parseUnits("1250000", 18), apr: [60240n, 90360n, 150600n, 240960n],
   };
 
-  let readProvider, rToken, rStaking, wToken, wStaking;
+  let readProvider, rToken, rStaking, wToken, wStaking, rGP, wGP;
   if (LIVE) {
     readProvider = new ethers.JsonRpcProvider(C.RPC, C.CHAIN_ID, { staticNetwork: true, cacheTimeout: -1 });
     rToken = new ethers.Contract(C.KIIX_TOKEN, TOKEN_ABI, readProvider);
     rStaking = new ethers.Contract(C.STAKING, STAKING_ABI, readProvider);
+    if (GP_LIVE) rGP = new ethers.Contract(C.GATEPASS, GP_ABI, readProvider);
   }
+
+  // state of Gate Pass
+  S.gp = { price: [0n, 0n, 0n, 0n], minted: [0n, 0n, 0n, 0n], cap: [0n, 0n, 0n, 0n], quote: [null, null, null, null], open: true, level: 0 };
+  S.cur = "BNB";
+  const payAddr = () => (S.cur === "BNB" ? ethers.ZeroAddress : C.PAY_TOKENS[S.cur]);
+  const refAddr = () => {
+    try {
+      const q = new URLSearchParams(location.search).get("ref");
+      if (q && isAddr(q)) localStorage.setItem("okref", q);
+      const r = localStorage.getItem("okref");
+      return r && isAddr(r) && r.toLowerCase() !== (S.account || "").toLowerCase() ? r : ethers.ZeroAddress;
+    } catch { return ethers.ZeroAddress; }
+  };
+  const fmtUsd = (w) => "$" + Number(ethers.formatUnits(w, 18)).toLocaleString("ru-RU", { maximumFractionDigits: 0 });
 
   // ---------- helpers ----------
   const fmtTok = (v, d = 2) => {
@@ -137,17 +163,80 @@
   }
 
   function renderSectors(userWei) {
-    const e = energyOf(userWei || 0n);
-    $("sectorGrid").innerHTML = C.SECTORS.map((s) => {
-      const open = e >= s.need;
+    S.lastUserWei = userWei || 0n;
+    const e = energyOf(S.lastUserWei);
+    const g = S.gp;
+    $("sectorGrid").innerHTML = C.SECTORS.map((s, i) => {
+      const byEnergy = e >= s.need;
+      const byPass = g.level >= i + 1;
+      const open = byEnergy || byPass;
       const pct = Math.min(100, (e / s.need) * 100);
+      let shop = '<p class="note">Пропуска: скоро</p>';
+      if (GP_LIVE) {
+        const left = g.cap[i] > 0n ? (g.cap[i] - g.minted[i]).toString() + " / " + g.cap[i].toString() : "…";
+        const q = g.quote[i] != null ? "≈ " + Number(ethers.formatUnits(g.quote[i], 18)).toLocaleString("ru-RU", { maximumFractionDigits: 6 }) + " " + S.cur : "";
+        const sold = g.cap[i] > 0n && g.minted[i] >= g.cap[i];
+        shop = `<div class="shop"><div class="price">${fmtUsd(g.price[i])}</div><p class="note">${q}</p><p class="note">Осталось: ${left}</p>
+          <button class="btn sm gold full" data-pass="${i}" ${!g.open || sold ? "disabled" : ""}>${sold ? "Распродано" : g.open ? "Купить пропуск" : "Продажа закрыта"}</button></div>`;
+      }
       return `<div class="card sector ${open ? "open" : ""}">
         <div class="ring">${open ? "🔓" : "🔒"}</div>
         <h3>СЕКТОР ${s.name}</h3>
         <p class="mono">${fmtEnergy(s.need)}</p><p>${s.hint}</p>
         <div class="bar"><i style="width:${pct.toFixed(1)}%"></i></div>
-        <p class="note">${open ? "ДОСТУП ОТКРЫТ" : pct.toFixed(1) + "%"}</p></div>`;
+        <p class="note">${open ? (byPass && !byEnergy ? "ДОСТУП ОТКРЫТ · ПРОПУСК" : "ДОСТУП ОТКРЫТ") : pct.toFixed(1) + "% энергии"}</p>
+        ${shop}</div>`;
     }).join("");
+    document.querySelectorAll("[data-pass]").forEach((b) => b.addEventListener("click", () => buyPass(+b.dataset.pass, b)));
+    const rb = $("refBox");
+    if (rb) {
+      const show = GP_LIVE && S.account && g.level > 0;
+      rb.hidden = !show;
+      if (show) $("refLink").value = C.SITE_URL.replace(/\/?$/, "/") + "?ref=" + S.account;
+    }
+  }
+
+  // ---------- gate pass ----------
+  async function refreshPass() {
+    if (!GP_LIVE) return;
+    try {
+      const idx = [0, 1, 2, 3];
+      const [price, minted, cap, open] = await Promise.all([
+        Promise.all(idx.map((i) => rGP.priceUsd(i))), Promise.all(idx.map((i) => rGP.minted(i))),
+        Promise.all(idx.map((i) => rGP.maxSupply(i))), rGP.saleOpen(),
+      ]);
+      const quote = await Promise.all(idx.map((i) => rGP.quote(i, payAddr()).catch(() => null)));
+      const level = S.account ? Number(await rGP.accessLevel(S.account)) : 0;
+      S.gp = { price, minted, cap, quote, open, level };
+    } catch (e) { console.warn("pass read failed", e); }
+    renderSectors(S.lastUserWei || 0n);
+  }
+
+  async function buyPass(tier, btn) {
+    if (!S.account) { await connect(); if (!S.account) return; }
+    if (!GP_LIVE) return toast("Пропуска скоро.");
+    try {
+      const cur = payAddr();
+      const q = await rGP.quote(tier, cur);
+      const ref = refAddr();
+      if (S.cur === "BNB") {
+        const bal = await readProvider.getBalance(S.account);
+        const value = (q * 101n) / 100n; // +1% на движение курса, излишек вернётся
+        if (bal < value) return toast("Не хватает BNB: нужно около " + ethers.formatEther(value), true);
+        await act(btn, () => wGP.buy(tier, cur, ref, { value }), "Пропуск куплен! Сектор открыт", () => { if (!reduce) burst(120); });
+      } else {
+        const tk = new ethers.Contract(cur, TOKEN_ABI, S.signer);
+        const need = S.cur === "ETH" ? (q * 101n) / 100n : q;
+        const bal = await tk.balanceOf(S.account);
+        if (bal < need) return toast("Не хватает " + S.cur + " на кошельке", true);
+        const alw = await tk.allowance(S.account, C.GATEPASS);
+        if (alw < need) {
+          const ok = await act(btn, () => tk.approve(C.GATEPASS, need), "Разрешение выдано. Теперь нажми «Купить пропуск» ещё раз");
+          return ok;
+        }
+        await act(btn, () => wGP.buy(tier, cur, ref), "Пропуск куплен! Сектор открыт", () => { if (!reduce) burst(120); });
+      }
+    } catch (e) { toast(errMsg(e), true); }
   }
 
   // ---------- global data ----------
@@ -234,10 +323,12 @@
       if (LIVE) {
         wToken = new ethers.Contract(C.KIIX_TOKEN, TOKEN_ABI, S.signer);
         wStaking = new ethers.Contract(C.STAKING, STAKING_ABI, S.signer);
+        if (GP_LIVE) wGP = new ethers.Contract(C.GATEPASS, GP_ABI, S.signer);
       }
       $("connectBtn").textContent = short(S.account);
       $("stakeNote").textContent = LIVE ? "Сначала «Разрешить», потом «Вложить». Токены можно вывести после окончания лока. Комиссия протокола: 10% от забираемых наград (тело вклада без комиссии)." : "DEMO: вложения включатся после деплоя контрактов.";
       await refreshUser();
+      await refreshPass();
     } catch (e) { toast(errMsg(e), true); }
   }
 
@@ -256,6 +347,7 @@
   }
   async function act(btn, fn, okMsg, after) {
     const old = btn.textContent; btn.disabled = true; btn.textContent = "Подпиши в кошельке…";
+    let ok = false;
     try {
       const tx = await fn();
       btn.textContent = "Ждём блок…";
@@ -263,10 +355,12 @@
       await new Promise((r) => setTimeout(r, 1800)); // даём публичному RPC догнать блок
       toast("✅ " + okMsg);
       if (after) after();
+      ok = true;
     } catch (e) { toast(errMsg(e), true); }
     btn.textContent = old;
-    await Promise.all([refreshUser(), refreshGlobal()]);
+    await Promise.all([refreshUser(), refreshGlobal(), refreshPass()]);
     recalcButtons();
+    return ok;
   }
 
   // ---------- starfield + quanta ----------
@@ -313,6 +407,9 @@
     renderStatic();
     renderSectors(0n);
     $("connectBtn").addEventListener("click", connect);
+    if ($("payCur")) $("payCur").addEventListener("change", (e) => { S.cur = e.target.value; refreshPass(); });
+    if ($("copyRef")) $("copyRef").addEventListener("click", () => { $("refLink").select(); try { navigator.clipboard.writeText($("refLink").value); } catch {} toast("Ссылка скопирована"); });
+    refAddr();
     $("amount").addEventListener("input", recalcButtons);
     $("maxBtn").addEventListener("click", () => { $("amount").value = ethers.formatUnits(S.bal, 18); recalcButtons(); });
     $("approveBtn").addEventListener("click", () => act($("approveBtn"), () => wToken.approve(C.STAKING, parseAmt()), "Разрешение выдано. Теперь нажми «Вложить»"));
@@ -332,7 +429,9 @@
       window.ethereum.on && window.ethereum.on("chainChanged", () => location.reload());
     }
     refreshGlobal();
+    refreshPass();
     setInterval(refreshGlobal, 20000);
+    setInterval(refreshPass, 30000);
     setInterval(refreshUser, 12000);
   }
   init();

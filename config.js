@@ -14,6 +14,14 @@ window.OMNI = {
   KIIX_TOKEN: "0xaF82A50c0aC9CfF8c7F39da9Ff998921DB68bC94",   // новый KIIX (задеплоен)
   STAKING:    "0x49c6a95A95453143b0161437aAbc43db2383771C",   // стейкинг v2 (задеплоен)
 
+  // --- Gate Pass (ВСТАВЬ после деплоя) ---
+  GATEPASS: "0x289E3BD13a0d5919eAb7D063930027287937B7aD",
+  PAY_TOKENS: {
+    USDT: "0x55d398326f99059fF775485246999027B3197955",
+    USDC: "0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d",
+    ETH:  "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",   // Ethereum (BEP-20)
+  },
+
   // --- Адрес сайта (для иконки токена в MetaMask), например https://username.github.io/omni-key/ ---
   SITE_URL: "https://omni-key-kinetix.github.io/OMNI-KEY/",
 

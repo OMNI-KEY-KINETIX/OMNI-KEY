@@ -120,8 +120,16 @@
   <section id="sectors"><div class="wrap">
     <div class="tag">// ВРАТА</div>
     <h2>Закрытые сектора</h2>
-    <p class="sub">Доступ считается автоматически: твой стейк × 8 МДж. Никаких списков и админов — только энергия, которую ты реально вложил в Ядро.</p>
+    <p class="sub">Два пути в сектор: вложи KIIX в Ядро (стейк × 8 МДж) или купи пропуск-NFT за BNB, USDT, USDC или ETH. Доступ считается автоматически, без списков и админов.</p>
+    <div class="payRow"><span>Платить в:</span>
+      <select id="payCur"><option value="BNB">BNB</option><option value="USDT">USDT</option><option value="USDC">USDC</option><option value="ETH">ETH</option></select>
+      <span class="note">Пропуск — NFT. Открывает сектор без вложений в стейкинг.</span></div>
     <div class="grid g4" id="sectorGrid"></div>
+    <div class="card" id="refBox" hidden style="margin-top:16px">
+      <h3>🔗 Твоя реферальная ссылка</h3>
+      <p>Приведи друга: <b>10%</b> от его покупки пропуска придёт тебе сразу на кошелёк в той же валюте.</p>
+      <div class="inputWrap"><input type="text" id="refLink" readonly style="flex:1;background:#080c14;border:1px solid var(--line);border-radius:10px;color:#fff;padding:12px;font-family:var(--mono);font-size:.85rem"><button class="btn sm" id="copyRef" type="button">Копировать</button></div>
+    </div>
   </div></section>
 
   <!-- TOKENOMICS -->

@@ -134,3 +134,8 @@ footer .wrap{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}
   nav{display:none} .logoBox{order:-1}
   .alloc .a{grid-template-columns:110px 1fr 70px}
 }
+
+.payRow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:0 0 16px}
+.payRow select{background:#080c14;color:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-family:var(--mono);font-size:.95rem}
+.shop{margin-top:10px;border-top:1px dashed #1b2538;padding-top:10px}
+.shop .price{font-family:var(--mono);font-size:1.5rem;color:var(--gold)}
