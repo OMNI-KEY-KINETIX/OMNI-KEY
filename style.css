@@ -37,7 +37,7 @@ nav a:hover{color:#fff}
 
 /* hero */
 .hero{position:relative;min-height:88vh;display:flex;align-items:center;background:
-  linear-gradient(180deg,rgba(5,7,13,.55),rgba(5,7,13,.92)),url(hall.jpg) center/cover no-repeat}
+  radial-gradient(ellipse 22% 42% at 50% 52%,rgba(5,7,13,.9),rgba(5,7,13,0)),linear-gradient(180deg,rgba(5,7,13,.55),rgba(5,7,13,.92)),url(hall.jpg) center/cover no-repeat}
 .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:30px;align-items:center;padding-top:50px;padding-bottom:50px}
 .eyebrow{color:var(--gold);letter-spacing:.35em;font-size:.78rem;text-transform:uppercase}
 h1{font-size:clamp(2.4rem,6vw,4.6rem);line-height:1.02;margin:.25em 0 .3em;letter-spacing:.04em;color:#fff;text-shadow:0 0 30px rgba(74,115,255,.5)}
@@ -45,7 +45,7 @@ h1 span{background:linear-gradient(90deg,var(--gold2),var(--gold),var(--sap));-w
 .lead{color:#c3cde0;font-size:1.12rem;max-width:560px}
 .cta{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
 .logoBox{display:flex;justify-content:center}
-.logoBox img{width:min(420px,80vw);filter:drop-shadow(0 0 40px rgba(74,115,255,.55))}
+
 
 /* stat strip */
 .strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:-46px;position:relative;z-index:3}
@@ -139,3 +139,26 @@ footer .wrap{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}
 .payRow select{background:#080c14;color:#fff;border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-family:var(--mono);font-size:.95rem}
 .shop{margin-top:10px;border-top:1px dashed #1b2538;padding-top:10px}
 .shop .price{font-family:var(--mono);font-size:1.5rem;color:var(--gold)}
+
+/* ---- artifact orb ---- */
+.orb{position:relative;width:min(420px,80vw);aspect-ratio:1;perspective:1000px}
+.orb-glow{position:absolute;inset:-16%;border-radius:50%;pointer-events:none;
+  background:radial-gradient(circle,rgba(255,206,110,.30) 0%,rgba(74,115,255,.30) 38%,rgba(74,115,255,0) 68%);
+  animation:orbBreathe 7s ease-in-out infinite}
+@keyframes orbBreathe{0%,100%{opacity:.65;transform:scale(.96)}50%{opacity:1;transform:scale(1.05)}}
+.orb-orbit{position:absolute;inset:-13%;border:1px solid rgba(217,180,90,.42);border-radius:50%;
+  transform:rotate(-20deg) scaleY(.30);box-shadow:0 0 18px rgba(217,180,90,.18);pointer-events:none}
+.orb-orbit-spin{position:absolute;inset:0;animation:orbSpin 16s linear infinite}
+.orb-orbit-spin i{position:absolute;left:50%;top:-5px;width:9px;height:30px;margin-left:-4px;border-radius:50%;
+  background:radial-gradient(circle,#fff 0,#ffe9a8 40%,rgba(255,220,120,0) 72%);box-shadow:0 0 14px 3px rgba(255,214,120,.8)}
+@keyframes orbSpin{to{transform:rotate(360deg)}}
+.orb-tilt{position:absolute;inset:0;transform-style:preserve-3d;will-change:transform}
+.orb-img{position:absolute;inset:0;width:100%;height:100%;display:block;
+  filter:drop-shadow(0 26px 34px rgba(0,0,0,.65)) drop-shadow(0 0 28px rgba(74,115,255,.35))}
+.orb-sheen{position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;
+  -webkit-mask-image:url(artifact.webp);mask-image:url(artifact.webp);-webkit-mask-size:100% 100%;mask-size:100% 100%;
+  background:linear-gradient(112deg,transparent 38%,rgba(255,255,255,.55) 49%,rgba(255,236,190,.35) 53%,transparent 62%);
+  background-size:260% 100%;background-position:130% 0;animation:orbSheen 8s ease-in-out infinite}
+@keyframes orbSheen{0%,12%{background-position:130% 0}58%,100%{background-position:-30% 0}}
+.orb-spark{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+@media (prefers-reduced-motion:reduce){.orb-glow,.orb-orbit-spin,.orb-sheen{animation:none}}
