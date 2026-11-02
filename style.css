@@ -167,3 +167,12 @@ footer .wrap{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}
 .langSel{background:#0b1220;color:#dbe6ff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:inherit;font-size:.82rem;cursor:pointer;margin-left:0}
 .langSel:focus{outline:1px solid var(--teal)}
 @media (max-width:900px){.langSel{margin-left:auto}}
+
+/* rewards */
+.rwWarn{border-color:#3a3320}
+.rwWarn p{font-size:.82rem;line-height:1.6}
+.rwEp{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:9px 0;border-bottom:1px dashed #1b2538;font-size:.93rem;flex-wrap:wrap}
+.rwEp:last-child{border:none}
+.rwEp span{color:var(--mute)}
+.rwEp b{font-family:var(--mono);color:#fff}
+@media (max-width:900px){#rewards .g3,#rewards .g2{grid-template-columns:1fr}}

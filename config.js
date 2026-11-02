@@ -22,6 +22,9 @@ window.OMNI = {
     ETH:  "0x2170Ed0880ac9A755fd29B2688956BD959F933F8",   // Ethereum (BEP-20)
   },
 
+  // --- Программа вознаграждений (адрес OmniRewards; пусто = раздел показывает "первый период не опубликован") ---
+  REWARDS: "",
+
   // --- Адрес сайта (для иконки токена в MetaMask), например https://username.github.io/omni-key/ ---
   SITE_URL: "https://omni-key-kinetix.github.io/OMNI-KEY/",
 
@@ -32,11 +35,11 @@ window.OMNI = {
   // --- Физика OMNI-KEY ---
   ENERGY_PER_KIIX_J: 8e6,           // 1 KIIX в Ядре = 8 МДж
   KIIX_SUPPLY: 1e9,
-  SECTORS: [                         // пороги энергии (Дж)
-    { id: "alpha", name: "АЛЬФА", need: 1e9,  hint: "125 KIIX" },
-    { id: "beta",  name: "БЕТА",  need: 1e11, hint: "12 500 KIIX" },
-    { id: "gamma", name: "ГАММА", need: 1e13, hint: "1 250 000 KIIX" },
-    { id: "omega", name: "ОМЕГА", need: 1e15, hint: "125 000 000 KIIX" },
+  SECTORS: [                         // пороги энергии (Дж) = KIIX в стейке x 8e6. Цена пула старта ~$0.000001
+    { id: "alpha", name: "АЛЬФА", need: 1.6e14, hint: "20 000 000 KIIX" },
+    { id: "beta",  name: "БЕТА",  need: 8e14,   hint: "100 000 000 KIIX" },
+    { id: "gamma", name: "ГАММА", need: 3.2e15, hint: "400 000 000 KIIX" },
+    { id: "omega", name: "ОМЕГА", need: 7.2e15, hint: "900 000 000 KIIX" },
   ],
 
   // --- Реестр частиц (добавляй новые токены сюда) ---

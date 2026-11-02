@@ -60,12 +60,23 @@
     paid: ethers.parseUnits("1250000", 18), apr: [60240n, 90360n, 150600n, 240960n],
   };
 
+  const RW_LIVE = isAddr(C.REWARDS);
+  const RW_ABI = [
+    "function isClaimed(uint256,address) view returns (bool)",
+    "function claim(uint256 id, uint256 amount, bytes32[] proof)",
+    "function claimMany(uint256[] ids, uint256[] amounts, bytes32[][] proofs)",
+    "function epochCount() view returns (uint256)",
+  ];
+  const BOOST = [1.0, 1.1, 1.25, 1.5, 2.0]; // = scripts/lib/epoch.js BOOST_BPS (none, Alpha, Beta, Gamma, Omega)
+  let rRewards, wRewards;
+
   let readProvider, rToken, rStaking, wToken, wStaking, rGP, wGP;
   if (LIVE) {
     readProvider = new ethers.JsonRpcProvider(C.RPC, C.CHAIN_ID, { staticNetwork: true, cacheTimeout: -1 });
     rToken = new ethers.Contract(C.KIIX_TOKEN, TOKEN_ABI, readProvider);
     rStaking = new ethers.Contract(C.STAKING, STAKING_ABI, readProvider);
     if (GP_LIVE) rGP = new ethers.Contract(C.GATEPASS, GP_ABI, readProvider);
+    if (RW_LIVE) rRewards = new ethers.Contract(C.REWARDS, RW_ABI, readProvider);
   }
 
   // state of Gate Pass
@@ -323,6 +334,7 @@
         wToken = new ethers.Contract(C.KIIX_TOKEN, TOKEN_ABI, S.signer);
         wStaking = new ethers.Contract(C.STAKING, STAKING_ABI, S.signer);
         if (GP_LIVE) wGP = new ethers.Contract(C.GATEPASS, GP_ABI, S.signer);
+        if (RW_LIVE) wRewards = new ethers.Contract(C.REWARDS, RW_ABI, S.signer);
       }
       $("connectBtn").textContent = short(S.account);
       $("connectBtn").classList.add("on");
@@ -330,6 +342,7 @@
       $("stakeNote").textContent = LIVE ? T("stake_note") : T("stake_demo");
       await refreshUser();
       await refreshPass();
+      refreshRewards();
     } catch (e) { toast(errMsg(e), true); }
   }
 
@@ -372,9 +385,49 @@
       ok = true;
     } catch (e) { toast(errMsg(e), true); }
     btn.textContent = old;
-    await Promise.all([refreshUser(), refreshGlobal(), refreshPass()]);
+    await Promise.all([refreshUser(), refreshGlobal(), refreshPass(), refreshRewards()]);
     recalcButtons();
     return ok;
+  }
+
+
+  // ---------- rewards program ----------
+  function renderBoost() {
+    const names = [T("rw_boost_none"), T("sec_alpha"), T("sec_beta"), T("sec_gamma"), T("sec_omega")];
+    $("rwBoost").innerHTML = names.map((n, i) => `<div class="row"><span>${n}</span><b>×${BOOST[i].toFixed(2)}</b></div>`).join("");
+  }
+  async function refreshRewards() {
+    const box = $("rwYours");
+    if (!box) return;
+    if (!S.account) { box.innerHTML = `<p class="note">${T("rw_connect")}</p>`; return; }
+    if (!RW_LIVE) { box.innerHTML = `<p class="note">${T("rw_soon")}</p>`; return; }
+    try {
+      const r = await fetch("rewards/index.json?t=" + Date.now(), { cache: "no-store" });
+      if (!r.ok) throw new Error("no index");
+      const idx = await r.json();
+      if (!idx.epochs || !idx.epochs.length) { box.innerHTML = `<p class="note">${T("rw_soon")}</p>`; return; }
+      const me = S.account.toLowerCase();
+      const items = [];
+      for (const e of idx.epochs) {
+        const f = await (await fetch(e.file + "?t=" + Date.now(), { cache: "no-store" })).json();
+        const c = f.claims && f.claims[me];
+        if (!c) continue;
+        const done = await rRewards.isClaimed(e.id, S.account);
+        items.push({ id: e.id, sym: e.symbol, dec: e.decimals, amount: c.amount, proof: c.proof, done });
+      }
+      if (!items.length) { box.innerHTML = `<p class="note">${T("rw_none")}</p>`; return; }
+      const fmt = (it) => Number(ethers.formatUnits(it.amount, it.dec)).toLocaleString(window.LOCALE, { maximumFractionDigits: 6 });
+      const open = items.filter((i) => !i.done);
+      box.innerHTML = items.map((it) => `<div class="rwEp"><div><span>${T("rw_epoch", { n: it.id + 1 })}</span> <b>${fmt(it)} ${it.sym}</b></div>
+        ${it.done ? `<span class="pill on">${T("rw_got")}</span>` : `<button class="btn sm gold" data-rw="${it.id}">${T("rw_claim", { a: fmt(it), s: it.sym })}</button>`}</div>`).join("")
+        + (open.length > 1 ? `<div style="margin-top:10px"><button class="btn sm full" id="rwAll">${T("rw_claim_all")}</button></div>` : "");
+      box.querySelectorAll("[data-rw]").forEach((b) => b.addEventListener("click", () => {
+        const it = items.find((x) => x.id === +b.dataset.rw);
+        act(b, () => wRewards.claim(it.id, it.amount, it.proof), T("rw_ok"), () => { if (!reduce) burst(60); });
+      }));
+      const all = $("rwAll");
+      if (all) all.addEventListener("click", () => act(all, () => wRewards.claimMany(open.map((x) => x.id), open.map((x) => x.amount), open.map((x) => x.proof)), T("rw_ok")));
+    } catch (e) { console.warn("rewards", e); box.innerHTML = `<p class="note">${T("rw_soon")}</p>`; }
   }
 
   // ---------- starfield + quanta ----------
@@ -419,6 +472,7 @@
   // ---------- wire up ----------
   function init() {
     renderStatic();
+    renderBoost();
     renderSectors(0n);
     $("connectBtn").addEventListener("click", connect);
     if ($("payCur")) $("payCur").addEventListener("change", (e) => { S.cur = e.target.value; refreshPass(); });
