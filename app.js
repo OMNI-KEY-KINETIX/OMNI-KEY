@@ -39,16 +39,14 @@
   ];
 
   const TIERS = [
-    { name: "ИСКРА",      days: 0,   mult: 1.0 },
-    { name: "ИМПУЛЬС",    days: 30,  mult: 1.5 },
-    { name: "ПЛАЗМА",     days: 90,  mult: 2.5 },
-    { name: "СВЕРХНОВАЯ", days: 180, mult: 4.0 },
+    { get name() { return T("tier_0"); }, days: 0,   mult: 1.0 },
+    { get name() { return T("tier_1"); }, days: 30,  mult: 1.5 },
+    { get name() { return T("tier_2"); }, days: 90,  mult: 2.5 },
+    { get name() { return T("tier_3"); }, days: 180, mult: 4.0 },
   ];
 
-  const ALLOC = [
-    ["Награды стейкинга (36 мес.)", 15], ["Разработчик (вестинг)", 20], ["Казна проекта", 25],
-    ["Ликвидность DEX", 10], ["Ядро OMNI-KEY", 10], ["Маркетинг и комьюнити", 10], ["Резерв (новые частицы)", 10],
-  ];
+  const ALLOC_PCT = [15, 20, 25, 10, 10, 10, 10];
+  const allocList = () => ALLOC_PCT.map((p, i) => [T("alloc_" + i), p]);
 
   // ---------- state ----------
   const S = {
@@ -82,38 +80,39 @@
       return r && isAddr(r) && r.toLowerCase() !== (S.account || "").toLowerCase() ? r : ethers.ZeroAddress;
     } catch { return ethers.ZeroAddress; }
   };
-  const fmtUsd = (w) => "$" + Number(ethers.formatUnits(w, 18)).toLocaleString("ru-RU", { maximumFractionDigits: 0 });
+  const fmtUsd = (w) => "$" + Number(ethers.formatUnits(w, 18)).toLocaleString(window.LOCALE, { maximumFractionDigits: 0 });
 
   // ---------- helpers ----------
   const fmtTok = (v, d = 2) => {
     const n = Number(ethers.formatUnits(v, 18));
-    return n.toLocaleString("ru-RU", { maximumFractionDigits: d });
+    return n.toLocaleString(window.LOCALE, { maximumFractionDigits: d });
   };
-  const SI = ["Дж", "кДж", "МДж", "ГДж", "ТДж", "ПДж", "ЭДж", "ЗДж"];
+  const SI = T("si");
   const fmtEnergy = (j) => {
-    if (!isFinite(j) || j <= 0) return "0 Дж";
+    if (!isFinite(j) || j <= 0) return "0 " + SI[0];
     let i = 0; while (j >= 1000 && i < SI.length - 1) { j /= 1000; i++; }
-    return j.toLocaleString("ru-RU", { maximumFractionDigits: 2 }) + " " + SI[i];
+    return j.toLocaleString(window.LOCALE, { maximumFractionDigits: 2 }) + " " + SI[i];
   };
   const energyOf = (wei) => Number(ethers.formatUnits(wei, 18)) * C.ENERGY_PER_KIIX_J;
   const short = (a) => a.slice(0, 6) + "…" + a.slice(-4);
   const fmtApr = (bps, hasStake) => {
-    if (!hasStake) return "ты первый";
+    if (!hasStake) return T("apr_first");
     const p = Number(bps) / 100;
-    if (p > 1e6) return ">1 000 000%";
-    return p.toLocaleString("ru-RU", { maximumFractionDigits: 0 }) + "%";
+    if (p > 1e6) return T("over_1m");
+    return p.toLocaleString(window.LOCALE, { maximumFractionDigits: 0 }) + "%";
   };
   let toastT;
   function toast(msg, err) {
     const t = $("toast"); t.textContent = msg; t.className = "show" + (err ? " err" : "");
     clearTimeout(toastT); toastT = setTimeout(() => (t.className = ""), err ? 7000 : 4500);
   }
-  const errMsg = (e) => (e && (e.shortMessage || e.reason || e.message) || "Ошибка").toString().slice(0, 180);
+  const errMsg = (e) => (e && (e.shortMessage || e.reason || e.message) || T("err")).toString().slice(0, 180);
 
   // ---------- static render ----------
   function renderStatic() {
     const banner = $("modeBanner");
-    if (LIVE) { banner.textContent = "LIVE · BNB Smart Chain · данные читаются прямо из контрактов"; banner.className = "live"; }
+    banner.textContent = LIVE ? T("banner_live") : T("banner_demo");
+    if (LIVE) banner.className = "live";
 
     // particles
     $("particleGrid").innerHTML = C.PARTICLES.map((p) => `
@@ -121,45 +120,45 @@
         <div class="no">#${p.no}</div>
         ${p.status === "active" ? '<img class="pic" src="kiix.svg" alt="KIIX">' : '<div class="sealedIcon">🔒</div>'}
         <h3>${p.sym}</h3>
-        <p><b>${p.name}</b></p>
-        <p>${p.role}</p>
-        <p class="mono">Эмиссия: ${p.supply}</p>
-        <span class="pill ${p.status === "active" ? "on" : ""}">${p.status === "active" ? "активна" : "запечатана"}</span>
+        <p><b>${p.status === "active" ? p.name : T("p_sealedname")}</b></p>
+        <p>${T("p_role" + p.no)}</p>
+        <p class="mono">${T("p_emission")}${p.supply}</p>
+        <span class="pill ${p.status === "active" ? "on" : ""}">${p.status === "active" ? T("p_active") : T("p_sealed")}</span>
       </div>`).join("");
 
     // tiers
     $("tiers").innerHTML = TIERS.map((t, i) => `
       <button class="tier" data-t="${i}" type="button">
         <b>${t.name}</b><div class="m">×${t.mult.toFixed(1)}</div>
-        <small>${t.days === 0 ? "без блокировки" : "лок " + t.days + " дней"}</small>
+        <small>${t.days === 0 ? T("tier_nolock") : T("tier_lock", { d: t.days })}</small>
         <div class="apr" id="apr${i}">APR —</div>
       </button>`).join("");
     document.querySelectorAll(".tier").forEach((b) => b.addEventListener("click", () => { S.tier = +b.dataset.t; markTier(); recalcButtons(); }));
     markTier();
 
     // alloc
-    $("alloc").innerHTML = ALLOC.map(([n, p]) => `<div class="a"><span>${n}</span><div class="t"><i style="width:${p * 3.5}%"></i></div><em>${p}%</em></div>`).join("") +
-      `<p class="note">${ALLOC.map(([n, p]) => n + " " + (p * 10) + " млн").join(" · ")}</p>`;
+    $("alloc").innerHTML = allocList().map(([n, p]) => `<div class="a"><span>${n}</span><div class="t"><i style="width:${p * 3.5}%"></i></div><em>${p}%</em></div>`).join("") +
+      `<p class="note">${allocList().map(([n, p]) => n + " " + T("mln", { n: p * 10 })).join(" · ")}</p>`;
 
     // links
     const tok = LIVE ? C.KIIX_TOKEN : null;
-    $("tokAddr").textContent = tok ? short(tok) : "после деплоя";
+    $("tokAddr").textContent = tok ? short(tok) : T("after_deploy");
     const pc = C.PANCAKE_URL || (tok ? `https://pancakeswap.finance/swap?outputCurrency=${tok}&chain=bsc` : "#");
     const dd = C.DODO_URL || "https://app.dodoex.io/";
     $("buyPancake").href = pc; $("buyDodo").href = dd;
     $("buyHero").addEventListener("click", () => { });
     if (!tok) {
-      $("buyPancake").addEventListener("click", (e) => { e.preventDefault(); toast("Торговля стартует после запуска пулов."); });
+      $("buyPancake").addEventListener("click", (e) => { e.preventDefault(); toast(T("trade_soon")); });
     }
     $("footLinks").innerHTML = tok
-      ? `<a target="_blank" rel="noopener" href="${C.EXPLORER}/token/${C.KIIX_TOKEN}">Токен</a> · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.STAKING}">Стейкинг</a>`
-      : "контракты: после деплоя";
+      ? `<a target="_blank" rel="noopener" href="${C.EXPLORER}/token/${C.KIIX_TOKEN}">${T("foot_token")}</a> · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.STAKING}">${T("foot_staking")}</a>${GP_LIVE ? ` · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.GATEPASS}">${T("foot_pass")}</a>` : ""}`
+      : T("foot_none");
   }
 
   function markTier() {
     document.querySelectorAll(".tier").forEach((b) => b.classList.toggle("sel", +b.dataset.t === S.tier));
     const t = TIERS[S.tier];
-    $("selTier").textContent = `${t.name} ×${t.mult.toFixed(1)} · ${t.days ? t.days + " дн." : "без лока"}`;
+    $("selTier").textContent = `${t.name} ×${t.mult.toFixed(1)} · ${t.days ? T("d_short", { d: t.days }) : T("tier_nolock_short")}`;
   }
 
   function renderSectors(userWei) {
@@ -171,20 +170,20 @@
       const byPass = g.level >= i + 1;
       const open = byEnergy || byPass;
       const pct = Math.min(100, (e / s.need) * 100);
-      let shop = '<p class="note">Пропуска: скоро</p>';
+      let shop = `<p class="note">${T("pass_soon")}</p>`;
       if (GP_LIVE) {
         const left = g.cap[i] > 0n ? (g.cap[i] - g.minted[i]).toString() + " / " + g.cap[i].toString() : "…";
-        const q = g.quote[i] != null ? "≈ " + Number(ethers.formatUnits(g.quote[i], 18)).toLocaleString("ru-RU", { maximumFractionDigits: 6 }) + " " + S.cur : "";
+        const q = g.quote[i] != null ? "≈ " + Number(ethers.formatUnits(g.quote[i], 18)).toLocaleString(window.LOCALE, { maximumFractionDigits: 6 }) + " " + S.cur : "";
         const sold = g.cap[i] > 0n && g.minted[i] >= g.cap[i];
-        shop = `<div class="shop"><div class="price">${fmtUsd(g.price[i])}</div><p class="note">${q}</p><p class="note">Осталось: ${left}</p>
-          <button class="btn sm gold full" data-pass="${i}" ${!g.open || sold ? "disabled" : ""}>${sold ? "Распродано" : g.open ? "Купить пропуск" : "Продажа закрыта"}</button></div>`;
+        shop = `<div class="shop"><div class="price">${fmtUsd(g.price[i])}</div><p class="note">${q}</p><p class="note">${T("pass_left", { n: left })}</p>
+          <button class="btn sm gold full" data-pass="${i}" ${!g.open || sold ? "disabled" : ""}>${sold ? T("pass_sold") : g.open ? T("pass_buy") : T("pass_closed")}</button></div>`;
       }
       return `<div class="card sector ${open ? "open" : ""}">
         <div class="ring">${open ? "🔓" : "🔒"}</div>
-        <h3>СЕКТОР ${s.name}</h3>
-        <p class="mono">${fmtEnergy(s.need)}</p><p>${s.hint}</p>
+        <h3>${T("s_word")} ${T("sec_" + s.id)}</h3>
+        <p class="mono">${fmtEnergy(s.need)}</p><p>${Math.round(s.need / C.ENERGY_PER_KIIX_J).toLocaleString(window.LOCALE)} KIIX</p>
         <div class="bar"><i style="width:${pct.toFixed(1)}%"></i></div>
-        <p class="note">${open ? (byPass && !byEnergy ? "ДОСТУП ОТКРЫТ · ПРОПУСК" : "ДОСТУП ОТКРЫТ") : pct.toFixed(1) + "% энергии"}</p>
+        <p class="note">${open ? (byPass && !byEnergy ? T("sec_open_pass") : T("sec_open")) : T("sec_pct", { p: pct.toFixed(1) })}</p>
         ${shop}</div>`;
     }).join("");
     document.querySelectorAll("[data-pass]").forEach((b) => b.addEventListener("click", () => buyPass(+b.dataset.pass, b)));
@@ -214,7 +213,7 @@
 
   async function buyPass(tier, btn) {
     if (!S.account) { await connect(); if (!S.account) return; }
-    if (!GP_LIVE) return toast("Пропуска скоро.");
+    if (!GP_LIVE) return toast(T("pass_soon_t"));
     try {
       const cur = payAddr();
       const q = await rGP.quote(tier, cur);
@@ -222,19 +221,19 @@
       if (S.cur === "BNB") {
         const bal = await readProvider.getBalance(S.account);
         const value = (q * 101n) / 100n; // +1% на движение курса, излишек вернётся
-        if (bal < value) return toast("Не хватает BNB: нужно около " + ethers.formatEther(value), true);
-        await act(btn, () => wGP.buy(tier, cur, ref, { value }), "Пропуск куплен! Сектор открыт", () => { if (!reduce) burst(120); });
+        if (bal < value) return toast(T("no_bnb", { n: ethers.formatEther(value) }), true);
+        await act(btn, () => wGP.buy(tier, cur, ref, { value }), T("ok_bought"), () => { if (!reduce) burst(120); });
       } else {
         const tk = new ethers.Contract(cur, TOKEN_ABI, S.signer);
         const need = S.cur === "ETH" ? (q * 101n) / 100n : q;
         const bal = await tk.balanceOf(S.account);
-        if (bal < need) return toast("Не хватает " + S.cur + " на кошельке", true);
+        if (bal < need) return toast(T("no_cur", { c: S.cur }), true);
         const alw = await tk.allowance(S.account, C.GATEPASS);
         if (alw < need) {
-          const ok = await act(btn, () => tk.approve(C.GATEPASS, need), "Разрешение выдано. Теперь нажми «Купить пропуск» ещё раз");
+          const ok = await act(btn, () => tk.approve(C.GATEPASS, need), T("ok_approve_pass"));
           return ok;
         }
-        await act(btn, () => wGP.buy(tier, cur, ref), "Пропуск куплен! Сектор открыт", () => { if (!reduce) burst(120); });
+        await act(btn, () => wGP.buy(tier, cur, ref), T("ok_bought"), () => { if (!reduce) burst(120); });
       }
     } catch (e) { toast(errMsg(e), true); }
   }
@@ -264,7 +263,7 @@
   // ---------- user data ----------
   async function refreshUser() {
     if (!S.account) return;
-    if (!LIVE) { $("uBal").textContent = "DEMO"; renderSectors(0n); return; }
+    if (!LIVE) { $("uBal").textContent = T("demo"); renderSectors(0n); return; }
     try {
       const [bal, alw, pos] = await Promise.all([
         rToken.balanceOf(S.account), rToken.allowance(S.account, C.STAKING), rStaking.positionsOf(S.account),
@@ -282,22 +281,22 @@
       renderSectors(staked);
       renderPositions(open);
       recalcButtons();
-    } catch (e) { console.warn(e); toast("Не удалось прочитать данные: " + errMsg(e), true); }
+    } catch (e) { console.warn(e); toast(T("read_fail") + errMsg(e), true); }
   }
 
   function renderPositions(open) {
     const body = $("posBody");
-    if (!open.length) { body.innerHTML = '<tr><td colspan="6" class="empty">Позиций пока нет — вложи KIIX выше.</td></tr>'; return; }
+    if (!open.length) { body.innerHTML = `<tr><td colspan="6" class="empty">${T("pos_empty")}</td></tr>`; return; }
     const now = Math.floor(Date.now() / 1000);
     body.innerHTML = open.map((p, k) => {
       const left = p.unlock - now;
       const unlocked = left <= 0;
-      const when = unlocked ? "открыто" : left > 86400 ? Math.ceil(left / 86400) + " дн." : Math.ceil(left / 3600) + " ч.";
+      const when = unlocked ? T("unlocked") : left > 86400 ? T("d_short", { d: Math.ceil(left / 86400) }) : T("h_short", { h: Math.ceil(left / 3600) });
       return `<tr><td>${p.id}</td><td>${TIERS[p.tier].name} ×${TIERS[p.tier].mult.toFixed(1)}</td><td>${fmtTok(p.amount)}</td><td>${when}</td><td>${fmtTok(S.pend[k], 4)}</td>
-        <td><button class="btn sm" data-claim="${p.id}">Забрать</button><button class="btn sm gold" data-wd="${p.id}" ${unlocked ? "" : "disabled"}>Вывести</button></td></tr>`;
+        <td><button class="btn sm" data-claim="${p.id}">${T("claim")}</button><button class="btn sm gold" data-wd="${p.id}" ${unlocked ? "" : "disabled"}>${T("withdraw")}</button></td></tr>`;
     }).join("");
-    body.querySelectorAll("[data-claim]").forEach((b) => b.addEventListener("click", () => act(b, () => wStaking.claim(+b.dataset.claim), "Награда получена")));
-    body.querySelectorAll("[data-wd]").forEach((b) => b.addEventListener("click", () => act(b, () => wStaking.withdraw(+b.dataset.wd), "Токены и награда выведены")));
+    body.querySelectorAll("[data-claim]").forEach((b) => b.addEventListener("click", () => act(b, () => wStaking.claim(+b.dataset.claim), T("ok_claim"))));
+    body.querySelectorAll("[data-wd]").forEach((b) => b.addEventListener("click", () => act(b, () => wStaking.withdraw(+b.dataset.wd), T("ok_withdraw"))));
   }
 
   // ---------- wallet ----------
@@ -313,7 +312,7 @@
   }
 
   async function connect() {
-    if (!window.ethereum) return toast("MetaMask не найден. Установи расширение или открой сайт в браузере кошелька.", true);
+    if (!window.ethereum) return toast(T("no_mm"), true);
     try {
       await window.ethereum.request({ method: "eth_requestAccounts" });
       if (LIVE) await ensureChain();
@@ -327,8 +326,8 @@
       }
       $("connectBtn").textContent = short(S.account);
       $("connectBtn").classList.add("on");
-      $("connectBtn").title = "Подключено: " + S.account;
-      $("stakeNote").textContent = LIVE ? "Сначала «Разрешить», потом «Вложить». Токены можно вывести после окончания лока. Комиссия протокола: 10% от забираемых наград (тело вклада без комиссии)." : "DEMO: вложения включатся после деплоя контрактов.";
+      $("connectBtn").title = T("connected_title") + S.account;
+      $("stakeNote").textContent = LIVE ? T("stake_note") : T("stake_demo");
       await refreshUser();
       await refreshPass();
     } catch (e) { toast(errMsg(e), true); }
@@ -361,11 +360,11 @@
     $("stakeBtn").disabled = !(ok && !need);
   }
   async function act(btn, fn, okMsg, after) {
-    const old = btn.textContent; btn.disabled = true; btn.textContent = "Подпиши в кошельке…";
+    const old = btn.textContent; btn.disabled = true; btn.textContent = T("sign");
     let ok = false;
     try {
       const tx = await fn();
-      btn.textContent = "Ждём блок…";
+      btn.textContent = T("wait");
       await tx.wait();
       await new Promise((r) => setTimeout(r, 1800)); // даём публичному RPC догнать блок
       toast("✅ " + okMsg);
@@ -423,15 +422,15 @@
     renderSectors(0n);
     $("connectBtn").addEventListener("click", connect);
     if ($("payCur")) $("payCur").addEventListener("change", (e) => { S.cur = e.target.value; refreshPass(); });
-    if ($("copyRef")) $("copyRef").addEventListener("click", () => { $("refLink").select(); try { navigator.clipboard.writeText($("refLink").value); } catch {} toast("Ссылка скопирована"); });
+    if ($("copyRef")) $("copyRef").addEventListener("click", () => { $("refLink").select(); try { navigator.clipboard.writeText($("refLink").value); } catch {} toast(T("copied")); });
     refAddr();
     $("amount").addEventListener("input", recalcButtons);
     $("maxBtn").addEventListener("click", () => { $("amount").value = ethers.formatUnits(S.bal, 18); recalcButtons(); });
-    $("approveBtn").addEventListener("click", () => act($("approveBtn"), () => wToken.approve(C.STAKING, parseAmt()), "Разрешение выдано. Теперь нажми «Вложить»"));
-    $("stakeBtn").addEventListener("click", () => act($("stakeBtn"), () => wStaking.stake(parseAmt(), S.tier), "KIIX вложены в Ядро. Энергия Ключа растёт", () => { $("amount").value = ""; if (!reduce) burst(90); }));
+    $("approveBtn").addEventListener("click", () => act($("approveBtn"), () => wToken.approve(C.STAKING, parseAmt()), T("ok_approve_stake")));
+    $("stakeBtn").addEventListener("click", () => act($("stakeBtn"), () => wStaking.stake(parseAmt(), S.tier), T("ok_staked"), () => { $("amount").value = ""; if (!reduce) burst(90); }));
     $("addTokenBtn").addEventListener("click", async () => {
-      if (!LIVE) return toast("Токен ещё не задеплоен.");
-      if (!window.ethereum) return toast("MetaMask не найден.", true);
+      if (!LIVE) return toast(T("tok_nd"));
+      if (!window.ethereum) return toast(T("no_mm2"), true);
       try {
         await ensureChain();
         const options = { address: C.KIIX_TOKEN, symbol: "KIIX", decimals: 18 };

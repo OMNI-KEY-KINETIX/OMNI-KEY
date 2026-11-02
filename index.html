@@ -16,9 +16,10 @@
   <div class="wrap">
     <a class="brand" href="#top"><img src="artifact-mark.png" alt="OMNI-KEY">OMNI-KEY <small>/ KIIX</small></a>
     <nav>
-      <a href="#particles">Частицы</a><a href="#core">Ядро</a><a href="#sectors">Сектора</a><a href="#tokenomics">Токеномика</a><a href="#trust">Безопасность</a>
+      <a href="#particles" data-i18n="nav_particles">Частицы</a><a href="#core" data-i18n="nav_core">Ядро</a><a href="#sectors" data-i18n="nav_sectors">Сектора</a><a href="#tokenomics" data-i18n="nav_tokenomics">Токеномика</a><a href="#trust" data-i18n="nav_trust">Безопасность</a>
     </nav>
-    <button id="connectBtn" class="btn">Подключить кошелёк</button>
+    <select id="langSel" class="langSel" aria-label="Language"></select>
+    <button id="connectBtn" class="btn" data-i18n="connect">Подключить кошелёк</button>
   </div>
 </header>
 
@@ -26,19 +27,19 @@
   <div class="hero">
     <div class="wrap">
       <div>
-        <div class="eyebrow">Единый галактический артефакт</div>
+        <div class="eyebrow" data-i18n="hero_eyebrow">Единый галактический артефакт</div>
         <h1>OMNI<span>-KEY</span></h1>
-        <p class="lead">Токены, NFT и смарт-контракты — это не продукты. Это <b>атомы</b>. Из них физически собран Ключ: <b>1.25 квадриллиона кредитов</b>, <b>10 зетта-джоулей</b>, доступ в закрытые сектора. Каждая частица неделима. Каждая — реальный контракт в блокчейне.</p>
+        <p class="lead" data-i18n-html="hero_lead">Токены, NFT и смарт-контракты — это не продукты. Это <b>атомы</b>. Из них физически собран Ключ: <b>1.25 квадриллиона кредитов</b>, <b>10 зетта-джоулей</b>, доступ в закрытые сектора. Каждая частица неделима. Каждая — реальный контракт в блокчейне.</p>
         <div class="cta">
-          <a class="btn big" href="#core">Вложить энергию в Ядро</a>
-          <a class="btn big gold" href="#particles" id="buyHero">Купить KIIX</a>
+          <a class="btn big" href="#core" data-i18n="hero_cta1">Вложить энергию в Ядро</a>
+          <a class="btn big gold" href="#particles" id="buyHero" data-i18n="hero_cta2">Купить KIIX</a>
         </div>
       </div>
       <div class="logoBox"><div class="orb" id="orb">
         <div class="orb-glow"></div>
         <div class="orb-orbit"><div class="orb-orbit-spin"><i></i></div></div>
         <div class="orb-tilt" id="orbTilt">
-          <img class="orb-img" src="artifact.webp" alt="OMNI-KEY — галактический артефакт" width="760" height="760">
+          <img class="orb-img" src="artifact.webp" alt="OMNI-KEY — галактический артефакт" data-i18n-alt="hero_alt" width="760" height="760">
           <div class="orb-sheen"></div>
           <canvas class="orb-spark" id="orbSpark"></canvas>
         </div>
@@ -48,36 +49,36 @@
 
   <div class="wrap">
     <div class="strip">
-      <div><b id="sEnergy">—</b><span>Энергия Ядра</span></div>
-      <div><b id="sBound">—</b><span>KIIX связано</span></div>
-      <div><b id="sFill">—</b><span>Заполнение частицы №1</span></div>
-      <div><b id="sPool">—</b><span>Остаток наград</span></div>
+      <div><b id="sEnergy">—</b><span data-i18n="strip_energy">Энергия Ядра</span></div>
+      <div><b id="sBound">—</b><span data-i18n="strip_bound">KIIX связано</span></div>
+      <div><b id="sFill">—</b><span data-i18n="strip_fill">Заполнение частицы №1</span></div>
+      <div><b id="sPool">—</b><span data-i18n="strip_pool">Остаток наград</span></div>
     </div>
   </div>
 
   <!-- PARTICLES -->
   <section id="particles"><div class="wrap">
-    <div class="tag">// РЕЕСТР ЧАСТИЦ</div>
-    <h2>Из чего собран Ключ</h2>
-    <p class="sub">Каждый новый токен проекта — отдельная частица с лимитом эмиссии не более 1 миллиарда. Подключается к Ядру через тот же стейкинг. Пока открыта одна. Остальные запечатаны.</p>
+    <div class="tag" data-i18n="p_tag">// РЕЕСТР ЧАСТИЦ</div>
+    <h2 data-i18n="p_h2">Из чего собран Ключ</h2>
+    <p class="sub" data-i18n="p_sub">Каждый новый токен проекта — отдельная частица с лимитом эмиссии не более 1 миллиарда. Подключается к Ядру через тот же стейкинг. Пока открыта одна. Остальные запечатаны.</p>
     <div class="grid g4" id="particleGrid"></div>
 
     <div class="card" style="margin-top:16px">
       <div class="grid g2" style="align-items:center">
         <div>
-          <h3>KINETIX · KIIX — частица №1</h3>
-          <div class="row"><span>Сеть</span><b>BNB Smart Chain</b></div>
-          <div class="row"><span>Контракт</span><b id="tokAddr">—</b></div>
-          <div class="row"><span>Эмиссия</span><b>1 000 000 000 (фикс.)</b></div>
-          <div class="row"><span>Mint / owner / налоги</span><b>НЕТ</b></div>
+          <h3 data-i18n="p_title">KINETIX · KIIX — частица №1</h3>
+          <div class="row"><span data-i18n="p_net">Сеть</span><b>BNB Smart Chain</b></div>
+          <div class="row"><span data-i18n="p_contract">Контракт</span><b id="tokAddr">—</b></div>
+          <div class="row"><span data-i18n="p_supply">Эмиссия</span><b data-i18n="p_supplyval">1 000 000 000 (фикс.)</b></div>
+          <div class="row"><span data-i18n="p_nomint">Mint / owner / налоги</span><b data-i18n="p_no">НЕТ</b></div>
         </div>
         <div>
           <div class="btns" style="margin-bottom:10px">
             <a class="btn gold full" id="buyPancake" target="_blank" rel="noopener" style="text-align:center">PancakeSwap</a>
             <a class="btn full" id="buyDodo" target="_blank" rel="noopener" style="text-align:center">DODO</a>
           </div>
-          <button class="btn full" id="addTokenBtn">+ Добавить KIIX в MetaMask</button>
-          <p class="note">Ссылки на торговлю активируются после запуска пулов. Всегда сверяй адрес контракта с BscScan.</p>
+          <button class="btn full" id="addTokenBtn" data-i18n="p_add">+ Добавить KIIX в MetaMask</button>
+          <p class="note" data-i18n="p_note">Ссылки на торговлю активируются после запуска пулов. Всегда сверяй адрес контракта с BscScan.</p>
         </div>
       </div>
     </div>
@@ -85,40 +86,40 @@
 
   <!-- CORE / STAKING -->
   <section id="core"><div class="wrap">
-    <div class="tag">// ЯДРО · СТЕЙКИНГ</div>
-    <h2>Прогрессивный стейкинг KIIX</h2>
-    <p class="sub">Заблокировал KIIX — получил множитель наград и добавил энергию Ключу. Чем дольше лок, тем сильнее множитель. APR плавающий и честный: считается из реального пула наград, а не нарисован. Комиссия протокола — 10% от забираемых наград, вклад без комиссии.</p>
+    <div class="tag" data-i18n="c_tag">// ЯДРО · СТЕЙКИНГ</div>
+    <h2 data-i18n="c_h2">Прогрессивный стейкинг KIIX</h2>
+    <p class="sub" data-i18n="c_sub">Заблокировал KIIX — получил множитель наград и добавил энергию Ключу. Чем дольше лок, тем сильнее множитель. APR плавающий и честный: считается из реального пула наград, а не нарисован. Комиссия протокола — 10% от забираемых наград, вклад без комиссии.</p>
 
     <div class="stakeBg">
       <div class="tiers" id="tiers"></div>
       <div class="panelRow">
         <div class="box">
-          <div class="row"><span>Баланс KIIX</span><b id="uBal">—</b></div>
-          <div class="row"><span>Твой стейк</span><b id="uStaked">—</b></div>
-          <div class="row"><span>Награды к получению</span><b id="uPending">—</b></div>
-          <div class="row"><span>Твоя энергия в Ядре</span><b id="uEnergy">—</b></div>
-          <div class="row"><span>Всего в Ядре</span><b id="gStaked">—</b></div>
-          <div class="row"><span>Награды в год (поток)</span><b id="gPerYear">—</b></div>
+          <div class="row"><span data-i18n="u_bal">Баланс KIIX</span><b id="uBal">—</b></div>
+          <div class="row"><span data-i18n="u_staked">Твой стейк</span><b id="uStaked">—</b></div>
+          <div class="row"><span data-i18n="u_pending">Награды к получению</span><b id="uPending">—</b></div>
+          <div class="row"><span data-i18n="u_energy">Твоя энергия в Ядре</span><b id="uEnergy">—</b></div>
+          <div class="row"><span data-i18n="g_staked">Всего в Ядре</span><b id="gStaked">—</b></div>
+          <div class="row"><span data-i18n="g_year">Награды в год (поток)</span><b id="gPerYear">—</b></div>
         </div>
         <div class="box">
-          <div class="row"><span>Выбран уровень</span><b id="selTier">—</b></div>
+          <div class="row"><span data-i18n="sel_tier">Выбран уровень</span><b id="selTier">—</b></div>
           <div class="inputWrap">
-            <input type="number" id="amount" min="0" step="any" placeholder="Сколько KIIX вложить">
+            <input type="number" id="amount" min="0" step="any" placeholder="Сколько KIIX вложить" data-i18n-ph="amount_ph">
             <button class="btn sm" id="maxBtn" type="button">MAX</button>
           </div>
           <div class="btns">
-            <button class="btn gold" id="approveBtn">1. Разрешить</button>
-            <button class="btn" id="stakeBtn">2. Вложить</button>
+            <button class="btn gold" id="approveBtn" data-i18n="btn_approve">1. Разрешить</button>
+            <button class="btn" id="stakeBtn" data-i18n="btn_stake">2. Вложить</button>
           </div>
-          <p class="note" id="stakeNote">Подключи кошелёк, чтобы вкладывать.</p>
+          <p class="note" id="stakeNote" data-i18n="note_connect">Подключи кошелёк, чтобы вкладывать.</p>
         </div>
       </div>
 
       <div class="box" style="margin-top:18px">
-        <h3 style="margin:0 0 8px">Твои позиции</h3>
+        <h3 style="margin:0 0 8px" data-i18n="pos_h">Твои позиции</h3>
         <div class="scroll"><table>
-          <thead><tr><th>#</th><th>Уровень</th><th>Вложено</th><th>Разблок.</th><th>Награда</th><th></th></tr></thead>
-          <tbody id="posBody"><tr><td colspan="6" class="empty">Подключи кошелёк</td></tr></tbody>
+          <thead><tr><th>#</th><th data-i18n="th_level">Уровень</th><th data-i18n="th_staked">Вложено</th><th data-i18n="th_unlock">Разблок.</th><th data-i18n="th_reward">Награда</th><th></th></tr></thead>
+          <tbody id="posBody"><tr><td colspan="6" class="empty" data-i18n="pos_connect">Подключи кошелёк</td></tr></tbody>
         </table></div>
       </div>
     </div>
@@ -126,51 +127,52 @@
 
   <!-- SECTORS -->
   <section id="sectors"><div class="wrap">
-    <div class="tag">// ВРАТА</div>
-    <h2>Закрытые сектора</h2>
-    <p class="sub">Два пути в сектор: вложи KIIX в Ядро (стейк × 8 МДж) или купи пропуск-NFT за BNB, USDT, USDC или ETH. Доступ считается автоматически, без списков и админов.</p>
-    <div class="payRow"><span>Платить в:</span>
+    <div class="tag" data-i18n="s_tag">// ВРАТА</div>
+    <h2 data-i18n="s_h2">Закрытые сектора</h2>
+    <p class="sub" data-i18n="s_sub">Два пути в сектор: вложи KIIX в Ядро (стейк × 8 МДж) или купи пропуск-NFT за BNB, USDT, USDC или ETH. Доступ считается автоматически, без списков и админов.</p>
+    <div class="payRow"><span data-i18n="s_pay">Платить в:</span>
       <select id="payCur"><option value="BNB">BNB</option><option value="USDT">USDT</option><option value="USDC">USDC</option><option value="ETH">ETH</option></select>
-      <span class="note">Пропуск — NFT. Открывает сектор без вложений в стейкинг.</span></div>
+      <span class="note" data-i18n="s_note">Пропуск — NFT. Открывает сектор без вложений в стейкинг.</span></div>
     <div class="grid g4" id="sectorGrid"></div>
     <div class="card" id="refBox" hidden style="margin-top:16px">
-      <h3>🔗 Твоя реферальная ссылка</h3>
-      <p>Приведи друга: <b>10%</b> от его покупки пропуска придёт тебе сразу на кошелёк в той же валюте.</p>
-      <div class="inputWrap"><input type="text" id="refLink" readonly style="flex:1;background:#080c14;border:1px solid var(--line);border-radius:10px;color:#fff;padding:12px;font-family:var(--mono);font-size:.85rem"><button class="btn sm" id="copyRef" type="button">Копировать</button></div>
+      <h3 data-i18n="ref_h">🔗 Твоя реферальная ссылка</h3>
+      <p data-i18n-html="ref_p">Приведи друга: <b>10%</b> от его покупки пропуска придёт тебе сразу на кошелёк в той же валюте.</p>
+      <div class="inputWrap"><input type="text" id="refLink" readonly style="flex:1;background:#080c14;border:1px solid var(--line);border-radius:10px;color:#fff;padding:12px;font-family:var(--mono);font-size:.85rem"><button class="btn sm" id="copyRef" type="button" data-i18n="ref_copy">Копировать</button></div>
     </div>
   </div></section>
 
   <!-- TOKENOMICS -->
   <section id="tokenomics"><div class="wrap">
-    <div class="tag">// ТОКЕНОМИКА KIIX</div>
-    <h2>1 000 000 000 KIIX. Всё.</h2>
-    <p class="sub">Эмиссия фиксирована навсегда: функции mint в контракте нет. Наград мало и они растянуты на 36 месяцев, чтобы не давить на цену. 1 KIIX в Ядре = 1 кредит стоимости = 8 МДж энергии.</p>
+    <div class="tag" data-i18n="t_tag">// ТОКЕНОМИКА KIIX</div>
+    <h2 data-i18n="t_h2">1 000 000 000 KIIX. Всё.</h2>
+    <p class="sub" data-i18n="t_sub">Эмиссия фиксирована навсегда: функции mint в контракте нет. Наград мало и они растянуты на 36 месяцев, чтобы не давить на цену. 1 KIIX в Ядре = 1 кредит стоимости = 8 МДж энергии.</p>
     <div class="twoCol">
       <div class="card"><div class="alloc" id="alloc"></div></div>
-      <div class="imgCard" role="img" aria-label="OMNI-KEY с разных сторон"></div>
+      <div class="imgCard" role="img" aria-label="OMNI-KEY с разных сторон" data-i18n-alt="t_alt"></div>
     </div>
   </div></section>
 
   <!-- TRUST -->
   <section id="trust"><div class="wrap">
-    <div class="tag">// ПРОВЕРЬ САМ</div>
-    <h2>Что владелец может — и чего не может</h2>
+    <div class="tag" data-i18n="tr_tag">// ПРОВЕРЬ САМ</div>
+    <h2 data-i18n="tr_h2">Что владелец может — и чего не может</h2>
     <div class="grid g2" style="margin-top:18px">
-      <div class="card"><h3>✅ Гарантии контракта</h3>
+      <div class="card"><h3 data-i18n="tr_g_h">✅ Гарантии контракта</h3>
         <ul class="trust">
-          <li>Токен: <code>без mint, без owner, без пауз, без налогов</code>.</li>
-          <li>Стейкинг: владелец <b>не может</b> забрать вложенные токены.</li>
-          <li>Владелец <b>не может</b> менять уровни, множители, сроки и размер комиссии (10% с наград, прописано в коде).</li>
-          <li>Награды, добавленные в пул, остаются у стейкеров.</li>
-          <li>Исходники открыты, верифицируются на BscScan.</li>
+          <li data-i18n-html="tr_g1">Токен: <code>без mint, без owner, без пауз, без налогов</code>.</li>
+          <li data-i18n-html="tr_g2">Стейкинг: владелец <b>не может</b> забрать вложенные токены.</li>
+          <li data-i18n-html="tr_g3">Владелец <b>не может</b> менять уровни, множители, сроки и размер комиссии (10% с наград, прописано в коде).</li>
+          <li data-i18n-html="tr_g4">Награды, добавленные в пул, остаются у стейкеров.</li>
+          <li data-i18n-html="tr_g5">Исходники открыты и верифицированы на BscScan.</li>
+          <li data-i18n-html="tr_g6">Пропуска (NFT): оплата идёт сразу на кошелёк проекта, контракт не хранит деньги покупателей, тиражи зашиты в код.</li>
         </ul>
       </div>
-      <div class="card risk"><h3>⚠️ Риски (читай)</h3>
+      <div class="card risk"><h3 data-i18n="tr_r_h">⚠️ Риски (читай)</h3>
         <ul class="trust">
-          <li>Проект экспериментальный. Токен может обесцениться до нуля.</li>
-          <li>Пулы ликвидности маленькие: сделки двигают цену сильно.</li>
-          <li>«Кредиты» и «зетта-джоули» — внутренние величины концепта, не рыночная цена.</li>
-          <li>Это не финансовый совет. Вкладывай только то, что готов потерять.</li>
+          <li data-i18n-html="tr_r1">Проект экспериментальный. Токен может обесцениться до нуля.</li>
+          <li data-i18n-html="tr_r2">Пулы ликвидности маленькие: сделки двигают цену сильно.</li>
+          <li data-i18n-html="tr_r3">«Кредиты» и «зетта-джоули» — внутренние величины концепта, не рыночная цена.</li>
+          <li data-i18n-html="tr_r4">Это не финансовый совет. Вкладывай только то, что готов потерять.</li>
         </ul>
       </div>
     </div>
@@ -185,6 +187,7 @@
 <div id="toast"></div>
 <script src="ethers.umd.min.js"></script>
 <script src="config.js"></script>
+<script src="i18n.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
