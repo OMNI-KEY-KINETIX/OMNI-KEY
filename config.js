@@ -28,6 +28,11 @@ window.OMNI = {
   // --- Адрес сайта (для иконки токена в MetaMask), например https://username.github.io/omni-key/ ---
   SITE_URL: "https://omni-key-kinetix.github.io/OMNI-KEY/",
 
+  // --- Пул Pancake V2 и замок LP (PinkLock) ---
+  PAIR: "0x313E697825fFB6145e8a2733Cf7c53c2C7CD0837",
+  LP_LOCK_URL: "https://www.pinksale.finance/pinklock/bsc/record/2096113",
+  LP_LOCK_UNTIL: "2027-10-01",
+
   // --- Торговля (после создания пулов вставь прямые ссылки) ---
   PANCAKE_URL: "",   // пусто = сайт сам соберёт ссылку на swap из адреса токена
   DODO_URL: "",      // пусто = https://app.dodoex.io/

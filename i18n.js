@@ -182,6 +182,7 @@ var D = {
 "rw_warn_h":"Важно",
 "rw_warn":"Программа вознаграждений OMNI-KEY добровольная и <b>ничего не гарантирует</b>. Это не дивиденды, не проценты и не доля в прибыли, и не инвестиционный продукт. Будет ли распределение в периоде, в какой валюте и в каком размере, команда решает сама; оно может быть нулевым. Прошлые выплаты не означают будущих. KIIX и пропуска — цифровые утилитарные предметы: цена и доход не обещаются, стоимость может упасть до нуля. Программа может быть недоступна в твоей стране; соблюдение местных законов и налогов — твоя ответственность. Не является финансовой рекомендацией.",
 "foot_rewards":"Награды",
+"tr_lp":"Ликвидность пула (100% LP-токенов) заблокирована в PinkLock до {d}. <a target=\"_blank\" rel=\"noopener\" href=\"{u}\">Проверить замок</a>.","foot_lock":"Замок LP","foot_chart":"График",
 },
 "uk":{
 "meta_title":"OMNI-KEY — Галактичний артефакт із мікрочастинок Web3 · KINETIX (KIIX)",
@@ -365,6 +366,7 @@ var D = {
 "rw_warn_h":"Важливо",
 "rw_warn":"Програма винагород OMNI-KEY добровільна й <b>нічого не гарантує</b>. Це не дивіденди, не відсотки й не частка прибутку, і не інвестиційний продукт. Чи буде розподіл у періоді, в якій валюті та в якому розмірі, команда вирішує сама; він може бути нульовим. Минулі виплати не означають майбутніх. KIIX і пропуски — цифрові утилітарні предмети: ціна й дохід не обіцяються, вартість може впасти до нуля. Програма може бути недоступна у твоїй країні; дотримання місцевих законів і податків — твоя відповідальність. Не є фінансовою порадою.",
 "foot_rewards":"Винагороди",
+"tr_lp":"Ліквідність пулу (100% LP-токенів) заблокована в PinkLock до {d}. <a target=\"_blank\" rel=\"noopener\" href=\"{u}\">Перевірити замок</a>.","foot_lock":"Замок LP","foot_chart":"Графік",
 },
 "en":{
 "meta_title":"OMNI-KEY — A Galactic Artifact Built from Web3 Microparticles · KINETIX (KIIX)",
@@ -548,6 +550,7 @@ var D = {
 "rw_warn_h":"Important",
 "rw_warn":"The OMNI-KEY Rewards Program is voluntary and <b>guarantees nothing</b>. It is not a dividend, interest or profit share, and not an investment product. Whether a distribution happens in a given period, in which currency and how much is decided by the team and may be zero. Past distributions do not predict future ones. KIIX and Gate Passes are digital utility items: no price or income is promised and their value can fall to zero. The program may be unavailable in your country; compliance with local laws and taxes is your responsibility. Not financial advice.",
 "foot_rewards":"Rewards",
+"tr_lp":"Pool liquidity (100% of LP tokens) is locked in PinkLock until {d}. <a target=\"_blank\" rel=\"noopener\" href=\"{u}\">Check the lock</a>.","foot_lock":"LP lock","foot_chart":"Chart",
 },
 "zh":{
 "meta_title":"OMNI-KEY — 由 Web3 微粒子构成的银河神器 · KINETIX (KIIX)",
@@ -731,6 +734,7 @@ var D = {
 "rw_warn_h":"重要提示",
 "rw_warn":"OMNI-KEY 奖励计划是自愿性质的，<b>不作任何保证</b>。它不是股息、利息或利润分成，也不是投资产品。某一周期是否分配、以何种币种、分配多少，均由团队决定，也可能为零。过往分配不代表未来。KIIX 和通行证是数字实用型物品：不承诺价格或收益，其价值可能归零。该计划在你所在的国家或地区可能不可用；遵守当地法律与税务规定是你自己的责任。不构成财务建议。",
 "foot_rewards":"奖励",
+"tr_lp":"资金池流动性（100% 的 LP 代币）已在 PinkLock 锁定至 {d}。<a target=\"_blank\" rel=\"noopener\" href=\"{u}\">查看锁仓</a>。","foot_lock":"LP 锁仓","foot_chart":"图表",
 },
 "ja":{
 "meta_title":"OMNI-KEY — Web3の微粒子から生まれた銀河のアーティファクト · KINETIX (KIIX)",
@@ -914,6 +918,7 @@ var D = {
 "rw_warn_h":"重要",
 "rw_warn":"OMNI-KEY リワードプログラムは任意のもので、<b>何も保証しません</b>。配当・利息・利益分配ではなく、投資商品でもありません。各期間に分配を行うか、どの通貨でいくらにするかはチームが決定し、ゼロになることもあります。過去の分配は将来を示すものではありません。KIIX とゲートパスはデジタルのユーティリティ品であり、価格や収益は約束されず、価値がゼロになる可能性があります。お住まいの国ではプログラムを利用できない場合があります。現地の法律と税金の遵守はご自身の責任です。金融アドバイスではありません。",
 "foot_rewards":"リワード",
+"tr_lp":"プールの流動性（LPトークンの100%）は {d} まで PinkLock でロックされています。<a target=\"_blank\" rel=\"noopener\" href=\"{u}\">ロックを確認</a>。","foot_lock":"LPロック","foot_chart":"チャート",
 },
 "es":{
 "meta_title":"OMNI-KEY — Un artefacto galáctico hecho de micropartículas Web3 · KINETIX (KIIX)",
@@ -1097,6 +1102,7 @@ var D = {
 "rw_warn_h":"Importante",
 "rw_warn":"El Programa de Recompensas de OMNI-KEY es voluntario y <b>no garantiza nada</b>. No es un dividendo, un interés ni una participación en beneficios, y no es un producto de inversión. Si hay reparto en un periodo, en qué moneda y por qué importe lo decide el equipo y puede ser cero. Los repartos pasados no predicen los futuros. KIIX y los pases son objetos digitales de utilidad: no se promete precio ni ingresos y su valor puede caer a cero. El programa puede no estar disponible en tu país; cumplir las leyes y los impuestos locales es tu responsabilidad. No es asesoramiento financiero.",
 "foot_rewards":"Recompensas",
+"tr_lp":"La liquidez del pool (100 % de los tokens LP) está bloqueada en PinkLock hasta el {d}. <a target=\"_blank\" rel=\"noopener\" href=\"{u}\">Comprobar el bloqueo</a>.","foot_lock":"Bloqueo LP","foot_chart":"Gráfico",
 },
 "tr":{
 "meta_title":"OMNI-KEY — Web3 mikro parçacıklarından oluşan galaktik bir artefakt · KINETIX (KIIX)",
@@ -1280,6 +1286,7 @@ var D = {
 "rw_warn_h":"Önemli",
 "rw_warn":"OMNI-KEY Ödül Programı gönüllüdür ve <b>hiçbir şeyi garanti etmez</b>. Temettü, faiz veya kâr payı değildir ve bir yatırım ürünü değildir. Bir dönemde dağıtım yapılıp yapılmayacağına, hangi para biriminde ve ne kadar olacağına ekip karar verir; sıfır da olabilir. Geçmiş dağıtımlar gelecekteki dağıtımların göstergesi değildir. KIIX ve geçiş kartları dijital fayda ögeleridir: fiyat veya gelir vaat edilmez, değerleri sıfıra düşebilir. Program ülkende kullanılamıyor olabilir; yerel yasalara ve vergilere uymak senin sorumluluğundur. Finansal tavsiye değildir.",
 "foot_rewards":"Ödüller",
+"tr_lp":"Havuz likiditesi (LP tokenlerinin %100’ü) {d} tarihine kadar PinkLock’ta kilitli. <a target=\"_blank\" rel=\"noopener\" href=\"{u}\">Kilidi kontrol et</a>.","foot_lock":"LP kilidi","foot_chart":"Grafik",
 },
 "vi":{
 "meta_title":"OMNI-KEY — Cổ vật thiên hà tạo từ các vi hạt Web3 · KINETIX (KIIX)",
@@ -1463,6 +1470,7 @@ var D = {
 "rw_warn_h":"Quan trọng",
 "rw_warn":"Chương trình thưởng OMNI-KEY mang tính tự nguyện và <b>không đảm bảo bất cứ điều gì</b>. Đây không phải cổ tức, lãi hay chia lợi nhuận, và không phải sản phẩm đầu tư. Việc có phân phối trong một kỳ hay không, bằng loại tiền nào và bao nhiêu do đội ngũ quyết định và có thể bằng không. Các lần phân phối trước không dự báo các lần sau. KIIX và vé là vật phẩm tiện ích kỹ thuật số: không hứa hẹn giá hay thu nhập, giá trị có thể về 0. Chương trình có thể không khả dụng ở quốc gia của bạn; tuân thủ luật và thuế địa phương là trách nhiệm của bạn. Không phải lời khuyên tài chính.",
 "foot_rewards":"Thưởng",
+"tr_lp":"Thanh khoản của pool (100% token LP) được khóa trong PinkLock đến {d}. <a target=\"_blank\" rel=\"noopener\" href=\"{u}\">Kiểm tra khóa</a>.","foot_lock":"Khóa LP","foot_chart":"Biểu đồ",
 }
 };
 

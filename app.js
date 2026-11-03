@@ -161,8 +161,13 @@
     if (!tok) {
       $("buyPancake").addEventListener("click", (e) => { e.preventDefault(); toast(T("trade_soon")); });
     }
+    if (C.LP_LOCK_URL && $("lpLockLi")) {
+      const d = new Date(C.LP_LOCK_UNTIL + "T00:00:00Z").toLocaleDateString(window.LOCALE, { timeZone: "UTC", year: "numeric", month: "long", day: "numeric" });
+      $("lpLockLi").innerHTML = T("tr_lp", { u: C.LP_LOCK_URL, d });
+      $("lpLockLi").hidden = false;
+    }
     $("footLinks").innerHTML = tok
-      ? `<a target="_blank" rel="noopener" href="${C.EXPLORER}/token/${C.KIIX_TOKEN}">${T("foot_token")}</a> · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.STAKING}">${T("foot_staking")}</a>${GP_LIVE ? ` · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.GATEPASS}">${T("foot_pass")}</a>` : ""}`
+      ? `<a target="_blank" rel="noopener" href="${C.EXPLORER}/token/${C.KIIX_TOKEN}">${T("foot_token")}</a> · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.STAKING}">${T("foot_staking")}</a>${GP_LIVE ? ` · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.GATEPASS}">${T("foot_pass")}</a>` : ""}${C.PAIR ? ` · <a target="_blank" rel="noopener" href="https://dexscreener.com/bsc/${C.PAIR}">${T("foot_chart")}</a>` : ""}${C.LP_LOCK_URL ? ` · <a target="_blank" rel="noopener" href="${C.LP_LOCK_URL}">${T("foot_lock")}</a>` : ""}${RW_LIVE ? ` · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.REWARDS}">${T("foot_rewards")}</a>` : ""}`
       : T("foot_none");
   }
 
