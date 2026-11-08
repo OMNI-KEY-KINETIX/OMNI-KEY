@@ -23,7 +23,7 @@ window.OMNI = {
   },
 
   // --- Программа вознаграждений (адрес OmniRewards; пусто = раздел показывает "первый период не опубликован") ---
-  REWARDS: "",
+  REWARDS: "0x5F171D767b5D14957b31189990064a86e419Ba40",
 
   // --- Адрес сайта (для иконки токена в MetaMask), например https://username.github.io/omni-key/ ---
   SITE_URL: "https://omni-key-kinetix.github.io/OMNI-KEY/",
