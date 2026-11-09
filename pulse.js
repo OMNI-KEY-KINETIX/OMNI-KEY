@@ -2,6 +2,13 @@
    Только чтение блокчейна. Ключи, подписи и кошелёк не используются. */
 (function () {
   "use strict";
+  try {
+    if (window.top !== window.self) {            // защита от clickjacking: сайт не должен работать во фрейме
+      document.documentElement.style.display = "none";
+      try { window.top.location = window.self.location; } catch (e) {}
+      return;
+    }
+  } catch (e) { document.documentElement.style.display = "none"; return; }
   var C = window.OMNI, T = window.T, E = window.ethers;
   if (!C || !E || !T || !document.getElementById("pulse")) return;
 
@@ -18,6 +25,7 @@
   var fmtPrice = function (n) { return "$" + n.toExponential(2).replace("e-", "e−"); };
   var fe = function (x) { return Number(E.formatUnits(x, 18)); };
   var short = function (a) { return a.slice(0, 6) + "…" + a.slice(-4); };
+  var isHash = function (h) { return /^0x[0-9a-fA-F]{64}$/.test(h); };
   var link = function (path, label) { return '<a target="_blank" rel="noopener" href="' + C.EXPLORER + path + '">' + label + "</a>"; };
 
   var ERC20 = ["function balanceOf(address) view returns (uint256)", "function totalSupply() view returns (uint256)"];
@@ -226,7 +234,7 @@
     var nowTs = Math.floor(Date.now() / 1000);
     $("nbFeed").innerHTML = D.events.map(function (e) {
       var ts = d.blockTs - (d.block - e.b) * BLOCK_SEC;
-      return '<li class="ev ' + e.k + '"><i>' + (ICO[e.k] || "•") + "</i><span>" + e.t + "</span><em>" + ago(nowTs - ts) + ' · <a target="_blank" rel="noopener" href="' + C.EXPLORER + "/tx/" + e.tx + '">tx</a></em></li>';
+      return '<li class="ev ' + e.k + '"><i>' + (ICO[e.k] || "•") + "</i><span>" + e.t + "</span><em>" + ago(nowTs - ts) + ' · ' + (isHash(e.tx) ? '<a target="_blank" rel="noopener" href="' + C.EXPLORER + "/tx/" + e.tx + '">tx</a>' : "tx") + "</em></li>";
     }).join("");
   }
 
@@ -248,10 +256,10 @@
   var evT = 0;
   function loop() {
     if (document.hidden) return;
-    var ev = Date.now() - evT > 90000; if (ev) evT = Date.now();
+    var ev = Date.now() - evT > 180000; if (ev) evT = Date.now();
     tick(ev);
   }
   tick(true); evT = Date.now();
-  setInterval(loop, 30000);
+  setInterval(loop, 60000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) loop(); });
 })();

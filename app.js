@@ -421,6 +421,8 @@
         items.push({ id: e.id, sym: e.symbol, dec: e.decimals, amount: c.amount, proof: c.proof, done });
       }
       if (!items.length) { box.innerHTML = `<p class="note">${T("rw_none")}</p>`; return; }
+      const esc = (v) => String(v).replace(/[^A-Za-z0-9._-]/g, "").slice(0, 12);   // защита от HTML в данных эпох
+      items.forEach((it) => { it.sym = esc(it.sym); it.id = Number(it.id); });
       const fmt = (it) => Number(ethers.formatUnits(it.amount, it.dec)).toLocaleString(window.LOCALE, { maximumFractionDigits: 6 });
       const open = items.filter((i) => !i.done);
       box.innerHTML = items.map((it) => `<div class="rwEp"><div><span>${T("rw_epoch", { n: it.id + 1 })}</span> <b>${fmt(it)} ${it.sym}</b></div>
