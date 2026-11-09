@@ -37,6 +37,12 @@ window.OMNI = {
   PANCAKE_URL: "",   // пусто = сайт сам соберёт ссылку на swap из адреса токена
   DODO_URL: "",      // пусто = https://app.dodoex.io/
 
+  // --- Прозрачность / NANOBOTIKA (только чтение) ---
+  VESTING: "0xF68216333a63d34f7323FECeb0A376C1fA1E2d34",      // KiixVesting: 200 000 000 KIIX команды
+  TEAM_WALLET: "0x7438Cd5d156613a9e4F586494893D667C688B01e",   // кошелёк команды (публичный)
+  PINKLOCK: "0x407993575c91ce7643a4d4cCACc9A98c36eE1BBE",      // PinkLock V2 (держит LP)
+  CHAINLINK_BNB: "0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE", // Chainlink BNB/USD
+
   // --- Физика OMNI-KEY ---
   ENERGY_PER_KIIX_J: 8e6,           // 1 KIIX в Ядре = 8 МДж
   KIIX_SUPPLY: 1e9,

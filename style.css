@@ -176,3 +176,39 @@ footer .wrap{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}
 .rwEp span{color:var(--mute)}
 .rwEp b{font-family:var(--mono);color:#fff}
 @media (max-width:900px){#rewards .g3,#rewards .g2{grid-template-columns:1fr}}
+
+/* ===== Прозрачность + NANOBOTIKA ===== */
+.nbTicker{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(11,16,25,.7);margin-top:14px}
+.nbTicker .tkIn{display:inline-block;padding:9px 0;animation:nbScroll 60s linear infinite}
+.nbTicker .tkIn span{margin:0 26px;font-family:var(--mono);font-size:.82rem;color:#fff}
+.nbTicker .tkIn em{font-style:normal;color:var(--mute);margin-right:6px;text-transform:uppercase;letter-spacing:.08em}
+.nbTicker:hover .tkIn{animation-play-state:paused}
+@keyframes nbScroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:reduce){.nbTicker .tkIn{animation:none}}
+.chks{list-style:none;margin:8px 0 0;padding:0}
+.chk{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px dashed #1b2538;font-size:.93rem}
+.chk i{font-style:normal;width:24px;height:24px;border-radius:50%;text-align:center;line-height:24px;font-weight:800;font-size:.8rem}
+.chk.ok i{background:rgba(53,224,161,.15);color:var(--ok)} .chk.warn i{background:rgba(255,200,60,.15);color:#ffc83c}
+.chk.bad i{background:rgba(255,92,122,.18);color:var(--bad)} .chk.idle i{background:#1b2538;color:var(--mute)}
+.chk em{font-style:normal;color:var(--mute);font-size:.82rem;text-align:right}
+#transparency .row b{text-align:right;word-break:break-word}
+#transparency .row u{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;text-decoration:none}
+#transparency .bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:#101826;margin:6px 0 10px}
+#transparency .bar i{display:block;height:100%}
+.linkList{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:.85rem;margin-top:8px}
+.tls{display:grid;gap:10px;margin-top:8px}
+.tl{display:grid;grid-template-columns:18px 1fr;gap:12px;align-items:start;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#080c14}
+.tl i{width:14px;height:14px;border-radius:50%;margin-top:4px;background:#556;box-shadow:0 0 12px currentColor;color:#556}
+.tl.ok i{background:var(--ok);color:var(--ok)} .tl.warn i{background:#ffc83c;color:#ffc83c}
+.tl.bad i{background:var(--bad);color:var(--bad)} .tl.idle i{background:#6f8cff;color:#6f8cff}
+.tl b{display:block;font-size:.9rem;color:#fff} .tl span{color:var(--mute);font-size:.82rem}
+.mets{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.mets div{padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#080c14}
+.mets b{display:block;font-family:var(--mono);font-size:1rem;color:var(--teal)} .mets span{color:var(--mute);font-size:.78rem}
+.feed{list-style:none;margin:8px 0 0;padding:0;max-height:420px;overflow:auto}
+.feed li{display:grid;grid-template-columns:26px 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px dashed #1b2538;font-size:.9rem}
+.feed li.none{display:block;color:var(--mute)}
+.feed li i{font-style:normal;text-align:center;font-weight:800}
+.feed li em{font-style:normal;color:var(--mute);font-size:.78rem;white-space:nowrap}
+.feed .buy i,.feed .claim i,.feed .rw i,.feed .rwc i{color:var(--ok)} .feed .sell i{color:var(--bad)} .feed .stake i,.feed .pass i{color:var(--teal)} .feed .vest i{color:#ffd24a}
+@media (max-width:900px){#transparency .g3,#pulse .g2{grid-template-columns:1fr}.chk{grid-template-columns:28px 1fr}.chk em{grid-column:2;text-align:left}.mets{grid-template-columns:1fr 1fr}}
