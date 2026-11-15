@@ -212,3 +212,11 @@ footer .wrap{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}
 .feed li em{font-style:normal;color:var(--mute);font-size:.78rem;white-space:nowrap}
 .feed .buy i,.feed .claim i,.feed .rw i,.feed .rwc i{color:var(--ok)} .feed .sell i{color:var(--bad)} .feed .stake i,.feed .pass i{color:var(--teal)} .feed .vest i{color:#ffd24a}
 @media (max-width:900px){#transparency .g3,#pulse .g2{grid-template-columns:1fr}.chk{grid-template-columns:28px 1fr}.chk em{grid-column:2;text-align:left}.mets{grid-template-columns:1fr 1fr}}
+
+/* v18: Genesis + community */
+.warnBox{margin-top:16px;padding:14px 16px;border:1px solid #ffb02e;border-left:4px solid #ffb02e;border-radius:10px;background:rgba(255,176,46,.08);color:#ffe3b0;line-height:1.5}
+.addr{word-break:break-all;font-size:.78rem;text-align:right}
+#genesis .row{align-items:flex-start;gap:12px}
+#socLinks{margin-top:6px}
+@media (max-width:1500px) and (min-width:1001px){nav{gap:10px}nav a{font-size:.7rem;letter-spacing:.05em}.brand{letter-spacing:.06em;white-space:nowrap}.brand small{letter-spacing:.06em}header.top .btn{padding-left:12px;padding-right:12px;white-space:nowrap;font-size:.8rem}.langSel{max-width:96px}}
+@media (max-width:1000px) and (min-width:901px){nav{display:none}.langSel{margin-left:auto}}

@@ -31,7 +31,7 @@
   <div class="wrap">
     <a class="brand" href="#top"><img src="artifact-mark.png" alt="OMNI-KEY">OMNI-KEY <small>/ KIIX</small></a>
     <nav>
-      <a href="#particles" data-i18n="nav_particles">Частицы</a><a href="#core" data-i18n="nav_core">Ядро</a><a href="#sectors" data-i18n="nav_sectors">Сектора</a><a href="#tokenomics" data-i18n="nav_tokenomics">Токеномика</a><a href="#trust" data-i18n="nav_trust">Безопасность</a><a href="#transparency" data-i18n="nav_transp">Прозрачность</a><a href="#pulse" data-i18n="nav_pulse">Пульс</a>
+      <a href="#particles" data-i18n="nav_particles">Частицы</a><a href="#genesis" data-i18n="nav_genesis">Генезис</a><a href="#core" data-i18n="nav_core">Ядро</a><a href="#sectors" data-i18n="nav_sectors">Сектора</a><a href="#tokenomics" data-i18n="nav_tokenomics">Токеномика</a><a href="#trust" data-i18n="nav_trust">Безопасность</a><a href="#transparency" data-i18n="nav_transp">Прозрачность</a><a href="#pulse" data-i18n="nav_pulse">Пульс</a>
     </nav>
     <select id="langSel" class="langSel" aria-label="Language"></select>
     <button id="connectBtn" class="btn" data-i18n="connect">Подключить кошелёк</button>
@@ -99,6 +99,35 @@
         </div>
       </div>
     </div>
+  </div></section>
+
+  <!-- GENESIS -->
+  <section id="genesis"><div class="wrap">
+    <div class="tag" data-i18n="gen_tag">// ГЕНЕЗИС</div>
+    <h2 data-i18n="gen_h2">Genesis — первый выпуск, архив</h2>
+    <p class="sub" data-i18n="gen_sub"></p>
+    <div class="grid g2">
+      <div class="card">
+        <h3 data-i18n="gen_new_h"></h3>
+        <div class="row"><span data-i18n="gen_r_addr"></span><b class="mono addr" id="genNewAddr">—</b></div>
+        <div class="row"><span data-i18n="gen_r_status"></span><b data-i18n="gen_new_status"></b></div>
+        <div class="row"><span data-i18n="gen_r_owner"></span><b data-i18n="gen_new_owner"></b></div>
+        <div class="row"><span data-i18n="gen_r_supply"></span><b data-i18n="gen_supply_val"></b></div>
+        <div class="row"><span data-i18n="gen_r_hold"></span><b data-i18n="gen_new_hold"></b></div>
+      </div>
+      <div class="card">
+        <h3 data-i18n="gen_old_h"></h3>
+        <div class="row"><span data-i18n="gen_r_addr"></span><b class="mono addr" id="genOldAddr">—</b></div>
+        <div class="row"><span data-i18n="gen_r_status"></span><b data-i18n="gen_old_status"></b></div>
+        <div class="row"><span data-i18n="gen_r_owner"></span><b data-i18n="gen_old_owner"></b></div>
+        <div class="row"><span data-i18n="gen_r_supply"></span><b data-i18n="gen_supply_val"></b></div>
+        <div class="row"><span data-i18n="gen_r_hold"></span><b data-i18n="gen_old_hold"></b></div>
+        <div class="btns" style="margin-top:12px"><a class="btn full" id="genOldLink" target="_blank" rel="noopener" style="text-align:center" data-i18n="gen_open"></a></div>
+        <p class="note" data-i18n="gen_verify"></p>
+      </div>
+    </div>
+    <div class="warnBox" data-i18n="gen_warn"></div>
+    <div class="card" style="margin-top:16px"><h3 data-i18n="gen_plan_h"></h3><p data-i18n="gen_plan"></p></div>
   </div></section>
 
   <!-- CORE / STAKING -->
@@ -248,6 +277,7 @@
 <footer><div class="wrap">
   <div><b style="color:#fff">OMNI-KEY</b> · KINETIX (KIIX) · BNB Smart Chain</div>
   <div class="mono" id="footLinks"></div>
+  <div class="mono" id="socLinks"></div>
 </div></footer>
 
 <div id="toast"></div>

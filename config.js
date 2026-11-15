@@ -43,6 +43,16 @@ window.OMNI = {
   PINKLOCK: "0x407993575c91ce7643a4d4cCACc9A98c36eE1BBE",      // PinkLock V2 (держит LP)
   CHAINLINK_BNB: "0x0567F2323251f0Aab15c8dFb1967E4e8A7D42aeE", // Chainlink BNB/USD
 
+  // --- Genesis: архивный выпуск (НЕ торгуется, НЕ официальный KIIX) ---
+  GENESIS_OLD: "0x36305A14289cFCa04501425f97cdda61C017AC2B",
+
+  // --- Сообщество ---
+  SOCIAL: {
+    X: "https://x.com/OMNIKEYKIIX",
+    TG: "https://t.me/OMNIKEYKIIX",
+    CHAT: "https://t.me/OMNIKEY_KIIX_CHAT",
+  },
+
   // --- Физика OMNI-KEY ---
   ENERGY_PER_KIIX_J: 8e6,           // 1 KIIX в Ядре = 8 МДж
   KIIX_SUPPLY: 1e9,

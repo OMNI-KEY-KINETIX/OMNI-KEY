@@ -169,6 +169,24 @@
     $("footLinks").innerHTML = tok
       ? `<a target="_blank" rel="noopener" href="${C.EXPLORER}/token/${C.KIIX_TOKEN}">${T("foot_token")}</a> · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.STAKING}">${T("foot_staking")}</a>${GP_LIVE ? ` · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.GATEPASS}">${T("foot_pass")}</a>` : ""}${C.PAIR ? ` · <a target="_blank" rel="noopener" href="https://dexscreener.com/bsc/${C.PAIR}">${T("foot_chart")}</a>` : ""}${C.LP_LOCK_URL ? ` · <a target="_blank" rel="noopener" href="${C.LP_LOCK_URL}">${T("foot_lock")}</a>` : ""}${RW_LIVE ? ` · <a target="_blank" rel="noopener" href="${C.EXPLORER}/address/${C.REWARDS}">${T("foot_rewards")}</a>` : ""}`
       : T("foot_none");
+    // Genesis + community (v18). Only whitelisted https links from config.js, built with DOM APIs.
+    try {
+      const ex = (a) => /^0x[0-9a-fA-F]{40}$/.test(a || "");
+      if ($("genNewAddr") && ex(C.KIIX_TOKEN)) $("genNewAddr").textContent = C.KIIX_TOKEN;
+      if ($("genOldAddr") && ex(C.GENESIS_OLD)) $("genOldAddr").textContent = C.GENESIS_OLD;
+      if ($("genOldLink") && ex(C.GENESIS_OLD)) $("genOldLink").href = C.EXPLORER + "/token/" + C.GENESIS_OLD;
+      const soc = $("socLinks");
+      if (soc && C.SOCIAL) {
+        soc.textContent = "";
+        [["X", "soc_x"], ["TG", "soc_tg"], ["CHAT", "soc_chat"]].forEach(([k, tk], i) => {
+          const u = C.SOCIAL[k];
+          if (!/^https:\/\/(x\.com|t\.me)\//.test(u || "")) return;
+          if (soc.childNodes.length) soc.appendChild(document.createTextNode(" · "));
+          const a = document.createElement("a"); a.href = u; a.target = "_blank"; a.rel = "noopener"; a.textContent = T(tk);
+          soc.appendChild(a);
+        });
+      }
+    } catch (e) { /* non-critical */ }
   }
 
   function markTier() {
