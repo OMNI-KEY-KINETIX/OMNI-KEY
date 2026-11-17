@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://bsc-dataseed.binance.org https://bsc-dataseed1.binance.org https://bsc-dataseed1.defibit.io https://bsc-rpc.publicnode.com; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://bsc-dataseed.binance.org https://bsc-dataseed1.binance.org https://bsc-dataseed1.defibit.io https://bsc-rpc.publicnode.com https://omni-key-gate.omnikeykiix.workers.dev; manifest-src 'self'; base-uri 'none'; form-action 'none'; object-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OMNI-KEY — Галактический артефакт из микрочастиц Web3 · KINETIX (KIIX)</title>
@@ -31,7 +31,7 @@
   <div class="wrap">
     <a class="brand" href="#top"><img src="artifact-mark.png" alt="OMNI-KEY">OMNI-KEY <small>/ KIIX</small></a>
     <nav>
-      <a href="#particles" data-i18n="nav_particles">Частицы</a><a href="#genesis" data-i18n="nav_genesis">Генезис</a><a href="#core" data-i18n="nav_core">Ядро</a><a href="#sectors" data-i18n="nav_sectors">Сектора</a><a href="#tokenomics" data-i18n="nav_tokenomics">Токеномика</a><a href="#trust" data-i18n="nav_trust">Безопасность</a><a href="#transparency" data-i18n="nav_transp">Прозрачность</a><a href="#pulse" data-i18n="nav_pulse">Пульс</a>
+      <a href="#particles" data-i18n="nav_particles">Частицы</a><a href="#genesis" data-i18n="nav_genesis">Генезис</a><a href="#core" data-i18n="nav_core">Ядро</a><a href="#sectors" data-i18n="nav_sectors">Сектора</a><a href="#tokenomics" data-i18n="nav_tokenomics">Токеномика</a><a href="#trust" data-i18n="nav_trust">Безопасность</a><a href="#transparency" data-i18n="nav_transp">Прозрачность</a><a href="#timeline" data-i18n="nav_timeline">Календарь</a><a href="#pulse" data-i18n="nav_pulse">Пульс</a>
     </nav>
     <select id="langSel" class="langSel" aria-label="Language"></select>
     <button id="connectBtn" class="btn" data-i18n="connect">Подключить кошелёк</button>
@@ -180,10 +180,17 @@
       <select id="payCur"><option value="BNB">BNB</option><option value="USDT">USDT</option><option value="USDC">USDC</option><option value="ETH">ETH</option></select>
       <span class="note" data-i18n="s_note">Пропуск — NFT. Открывает сектор без вложений в стейкинг.</span></div>
     <div class="grid g4" id="sectorGrid"></div>
+    <div class="card" id="alphaBox" hidden style="margin-top:16px">
+      <h3 data-i18n="alpha_h"></h3>
+      <p data-i18n="alpha_p"></p>
+      <div class="btns"><button class="btn gold" id="alphaBtn" type="button" data-i18n="alpha_btn"></button></div>
+      <p class="note" id="alphaOut"></p>
+      <p class="note" data-i18n="alpha_warn"></p>
+    </div>
     <div class="card" id="refBox" hidden style="margin-top:16px">
       <h3 data-i18n="ref_h">🔗 Твоя реферальная ссылка</h3>
       <p data-i18n-html="ref_p">Приведи друга: <b>10%</b> от его покупки пропуска придёт тебе сразу на кошелёк в той же валюте.</p>
-      <div class="inputWrap"><input type="text" id="refLink" readonly style="flex:1;background:#080c14;border:1px solid var(--line);border-radius:10px;color:#fff;padding:12px;font-family:var(--mono);font-size:.85rem"><button class="btn sm" id="copyRef" type="button" data-i18n="ref_copy">Копировать</button></div>
+      <div class="inputWrap"><input type="text" id="refLink" readonly style="flex:1;background:#080c14;border:1px solid var(--line);border-radius:10px;color:#fff;padding:12px;font-family:var(--mono);font-size:.85rem"><a class="btn sm gold" id="shareX" href="#" target="_blank" rel="noopener" data-i18n="share_btn" style="margin-left:8px"></a><button class="btn sm" id="copyRef" type="button" data-i18n="ref_copy">Копировать</button></div>
     </div>
   </div></section>
 
@@ -260,6 +267,15 @@
   </div></section>
 
   <!-- NANOBOTIKA -->
+  <!-- TIMELINE -->
+  <section id="timeline"><div class="wrap">
+    <div class="tag" data-i18n="tl_tag"></div>
+    <h2 data-i18n="tl_h2"></h2>
+    <p class="sub" data-i18n="tl_sub"></p>
+    <div class="grid g2" id="tlGrid"></div>
+    <p class="note" data-i18n="tl_note"></p>
+  </div></section>
+
   <section id="pulse"><div class="wrap">
     <div class="tag" data-i18n="nb_tag">// NANOBOTIKA v1 · ПУЛЬС ЭКОСИСТЕМЫ</div>
     <h2 data-i18n="nb_h2">Живой пульс OMNI-KEY</h2>
@@ -286,5 +302,6 @@
 <script src="i18n.js"></script>
 <script src="app.js"></script>
 <script src="pulse.js"></script>
+<script src="extras.js"></script>
 </body>
 </html>

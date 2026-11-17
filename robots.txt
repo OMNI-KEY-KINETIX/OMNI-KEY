@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://omni-key-kinetix.github.io/OMNI-KEY/sitemap.xml

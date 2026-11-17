@@ -220,3 +220,9 @@ footer .wrap{display:flex;gap:20px;justify-content:space-between;flex-wrap:wrap}
 #socLinks{margin-top:6px}
 @media (max-width:1500px) and (min-width:1001px){nav{gap:10px}nav a{font-size:.7rem;letter-spacing:.05em}.brand{letter-spacing:.06em;white-space:nowrap}.brand small{letter-spacing:.06em}header.top .btn{padding-left:12px;padding-right:12px;white-space:nowrap;font-size:.8rem}.langSel{max-width:96px}}
 @media (max-width:1000px) and (min-width:901px){nav{display:none}.langSel{margin-left:auto}}
+
+/* v20: calendar */
+.tlCard{display:flex;gap:14px;align-items:flex-start}
+.tlIc{font-size:1.8rem;line-height:1}
+.tlLeft{color:var(--gold)}.tlDone{color:#00ffcc}
+@media (max-width:900px){#timeline .g2{grid-template-columns:1fr}}

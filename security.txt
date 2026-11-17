@@ -1,0 +1,7 @@
+Contact: mailto:OMNIKEYKIIX@gmail.com
+Contact: https://t.me/OMNIKEY_KIIX_CHAT
+Expires: 2027-11-17T00:00:00.000Z
+Preferred-Languages: en, ru, uk
+Canonical: https://omni-key-kinetix.github.io/OMNI-KEY/security.txt
+Policy: https://omni-key-kinetix.github.io/OMNI-KEY/#trust
+# Contracts are verified on BscScan. We never ask for seed phrases, private keys or "wallet connect" in DMs.

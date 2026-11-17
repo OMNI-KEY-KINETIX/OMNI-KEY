@@ -46,12 +46,21 @@ window.OMNI = {
   // --- Genesis: архивный выпуск (НЕ торгуется, НЕ официальный KIIX) ---
   GENESIS_OLD: "0x36305A14289cFCa04501425f97cdda61C017AC2B",
 
+  // --- Автовыдача ссылки в канал Alpha (адрес Cloudflare Worker; пусто = блок скрыт) ---
+  GATE_API: "https://omni-key-gate.omnikeykiix.workers.dev",
+
   // --- Сообщество ---
   SOCIAL: {
     X: "https://x.com/OMNIKEYKIIX",
     TG: "https://t.me/OMNIKEYKIIX",
     CHAT: "https://t.me/OMNIKEY_KIIX_CHAT",
   },
+
+  // --- Календарь событий (все значения берутся из контрактов; здесь копия для отображения) ---
+  VESTING_START: 1794181800,      // 08.11.2026 23:50 UTC
+  VESTING_CLIFF_S: 7776000,       // 90 дней
+  VESTING_LINEAR_S: 63072000,     // 730 дней
+  STAKING_REWARDS_END: "2029-10-31",
 
   // --- Физика OMNI-KEY ---
   ENERGY_PER_KIIX_J: 8e6,           // 1 KIIX в Ядре = 8 МДж

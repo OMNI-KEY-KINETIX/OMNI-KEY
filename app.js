@@ -227,6 +227,34 @@
       rb.hidden = !show;
       if (show) $("refLink").value = C.SITE_URL.replace(/\/?$/, "/") + "?ref=" + S.account;
     }
+    const ab = $("alphaBox");
+    if (ab) ab.hidden = !(GP_LIVE && S.account && g.level > 0 && /^https:\/\/[a-z0-9.-]+\.workers\.dev$/.test(C.GATE_API || ""));
+  }
+
+  // ---------- Alpha invite (v19): sign a free message -> Worker checks the pass on-chain -> one-time link ----------
+  async function claimAlpha(btn) {
+    const out = $("alphaOut");
+    const base = String(C.GATE_API || "").replace(/\/$/, "");
+    if (!S.signer || !S.account || !/^https:\/\/[a-z0-9.-]+\.workers\.dev$/.test(base)) return;
+    btn.disabled = true; out.textContent = T("alpha_wait");
+    try {
+      const time = Math.floor(Date.now() / 1000);
+      const msg = `OMNI-KEY Alpha access\nWallet: ${S.account.toLowerCase()}\nTime: ${time}`;
+      const signature = await S.signer.signMessage(msg);
+      const r = await fetch(base + "/claim", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ address: S.account, time, signature }) });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok && typeof j.link === "string" && /^https:\/\/t\.me\/\+[A-Za-z0-9_-]+$/.test(j.link)) {
+        out.textContent = "";
+        const a = document.createElement("a"); a.href = j.link; a.target = "_blank"; a.rel = "noopener"; a.className = "btn sm"; a.textContent = T("alpha_open");
+        out.appendChild(a);
+        out.appendChild(document.createTextNode(" " + T("alpha_ok", { n: j.issued, m: j.max })));
+      } else {
+        const k = ({ no_pass: "alpha_e_nopass", limit_reached: "alpha_e_limit", expired_signature: "alpha_e_time" })[j.error] || "alpha_e_gen";
+        out.textContent = T(k);
+      }
+    } catch (e) {
+      out.textContent = (e && (e.code === 4001 || e.code === "ACTION_REJECTED")) ? T("alpha_e_rej") : T("alpha_e_gen");
+    } finally { btn.disabled = false; }
   }
 
   // ---------- gate pass ----------
@@ -500,6 +528,7 @@
     renderBoost();
     renderSectors(0n);
     $("connectBtn").addEventListener("click", connect);
+    if ($("alphaBtn")) $("alphaBtn").addEventListener("click", () => claimAlpha($("alphaBtn")));
     if ($("payCur")) $("payCur").addEventListener("change", (e) => { S.cur = e.target.value; refreshPass(); });
     if ($("copyRef")) $("copyRef").addEventListener("click", () => { $("refLink").select(); try { navigator.clipboard.writeText($("refLink").value); } catch {} toast(T("copied")); });
     refAddr();
